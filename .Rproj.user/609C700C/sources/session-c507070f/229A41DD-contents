@@ -1,4 +1,3 @@
-# MPI-CausalR-App
 # CausalR
 
 The app CausalR is based on the CausalImpact package. It models the impact of events on historical trajectories. For instance, how did the economy evolved following a certain political decision. There is a vignette with more details here: https://google.github.io/CausalImpact/CausalImpact.html
@@ -25,22 +24,3 @@ There should be a text output where any errors are listed. Remember that you are
 
 Missing (can be done later)
 Custom model, graphical options, save/load files, Docker file
-
-
-### Access to online version:
-- beta version: TBA
-
-### Help and installation Instructions:
-- TBA
-
-----
-
-### Naming Conventions of the R package:
-
-- Numbers as Prefix. Grouped into files with same type of functionality
-- Higher number indicate that the functions are closer to the functionality of the app / higher abstraction level
-- 00: Namespace, Settings
-- 01: Helper functions
-- 02: Helper shiny modules (files include ui + server component)
-- 03: Main shiny modules (basically tabs in the app)
-- 04: Start application / main functionality# plotr
