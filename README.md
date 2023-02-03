@@ -1,4 +1,5 @@
 # CausalR
+last edit: by Jian 2/03
 
 App 2: Detecting events in time series and assessing impact of events
 Often we are interested in detecting the timing of an event from the time series data. For instance, the Roman shipwreck example shown previously we see a sharp decline at c. 150 AD. This matches a massive pandemic in the Roman Empire that killed about one third of its population. Conversely, we might be interested in knowing what was the impact of an event like a pandemic or a political decision. The Roman Empire was divided into two parts in the 4th century (East and West) and we would like to know what was the impact of this decision on trade (via the shipwreck proxy).
