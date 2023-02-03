@@ -1,26 +1,23 @@
 # CausalR
-
-The app CausalR is based on the CausalImpact package. It models the impact of events on historical trajectories. For instance, how did the economy evolved following a certain political decision. There is a vignette with more details here: https://google.github.io/CausalImpact/CausalImpact.html
-
-Inputs
-User uploads an Excel or CSV file with numeric data (data). First row are column names. See point 2 in the vignette describing how to format the data using cbind. 
-Input boxes for pre-period ranges (min_pre and max_pre). You will concatenate these inputs so that you have a string looking like this “c(min_pre, max_pre)” and this is saved in pre.period. There should be an option (as a checkbox) to treat the string as a date (using as.Date applied to the concatenated string). If this is chosen it applied to both the pre and post period described below.
-Input boxes for post-period ranges (min_post and max_post). You will concatenate these inputs so that you have a string looking like this “c(min_post, max_post)” and this is saved in post.period
-Additional model options to be concatenated into a string. Each of the following, if used, should be concatenated into a string saved under model.args. Example: model.args = list(nseasons = 7, season.duration = 24
-Numeric input box for niter
-TRUE or FALSE option for standardize.data
-Numeric input box for prior.level.sd
-Numeric input box for nseasons
-TRUE or FALSE option for dynamic.regression
+> ## Detecting events in time series and assessing impact of events (App2)
+### Using CausalR and Ca
+- The app CausalR is based on the CausalImpact package. It models the impact of events on historical trajectories. For instance, how did the economy evolved following a certain political decision. There is a vignette with more details here: https://google.github.io/CausalImpact/CausalImpact.html
 
 
-Outputs
-Simple plot of data: matplot(data, type = "l")
-Analysis results. First you run (model.args to be used only if default values are changed. That is user provides inputs for additional model options):
-impact <- CausalImpact(data, pre.period, post.period, model.args=list(…))
-plot(impact)
-Summary text table by running summary(impact) for low precision results or impact$summary for higher precision. A third option includes guidance on interpretation: summary(impact, "report")
-There should be a text output where any errors are listed. Remember that you are not expected to debug if the user enters inappropriate data
+Often we are interested in detecting the timing of an event from the time series data. For instance, the Roman shipwreck example shown previously we see a sharp decline at c. 150 AD. This matches a massive pandemic in the Roman Empire that killed about one third of its population. Conversely, we might be interested in knowing what was the impact of an event like a pandemic or a political decision. The Roman Empire was divided into two parts in the 4th century (East and West) and we would like to know what was the impact of this decision on trade (via the shipwreck proxy).
+This app will combine two existing R packages: mcp and CausalImpact
+mcp takes a Bayesian approach to point changes. It can detect changes in time series trends following different link functions, it can detect changes in variances, and point change estimates are given as distributions (see example below)
 
-Missing (can be done later)
-Custom model, graphical options, save/load files, Docker file
+<img width="643" alt="image" src="https://user-images.githubusercontent.com/74462173/216494862-03459636-f54c-448b-9f2c-31b765f50cad.png">
+
+The implementation of mcp within the app should follow options given at this website: https://lindeloev.github.io/mcp/index.html
+Currently a mcp user has to select a number of functions and their type and point changes. In the example above, we have 3 linear functions and 2 point changes. Different options on these can be compared using leave-one-out cross-validation (loo) implemented within the app. Something to be added is an option where user can select a maximum number of functions, potential function types, max number of change points. A programming cycle is run for all combinations of these (up to max numbers) and their loo calculated. The output will rank models.
+The implementation of CausalImpact should follow this vignette: https://google.github.io/CausalImpact/CausalImpact.html
+One can quantify the impact of a certain event (e.g., political decision) at a known time under a counterfactual Bayesian approach. This requires the time series that one is interested in (e.g., number of written documents, shipwrecks) and independent time series for comparison. Illustration below.
+
+<img width="643" alt="image" src="https://user-images.githubusercontent.com/74462173/216494995-d9003eb8-fa7b-44ee-8ee8-a395e9f229b6.png">
+
+The above shows the impact of event at time 70. The blue broad line after is the predicted time series and the think dark line is the actual data. The impact is the difference.
+
+
+Author: Jianyin Roachell, Associate Researcher, MPI Geoanthropology, 2023.
