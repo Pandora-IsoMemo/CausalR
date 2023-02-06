@@ -87,7 +87,7 @@ selectColumnsUI <- function(id, label, emptyChoices) {
   ns <- NS(id)
   div(
     selectInput(ns("type"),
-                label = paste("Type of", label),
+                label = paste("Pre-period Range", label),
                 choices = c("Single point" = "point",
                             "Interval" = "interval",
                             "Mean + 1 SD uncertainty" = "meanSD",

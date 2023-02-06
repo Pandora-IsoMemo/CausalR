@@ -12,9 +12,9 @@ runModelUI <- function(id, title) {
         width = 3,
         fluidRow(
           column(8,
-                 selectInput(ns("activeFile"),
-                             label = "Select a file",
-                             choices = c("Import a file ..." = ""))
+                 # selectInput(ns("activeFile"),
+                 #             label = "Select a file",
+                 #             choices = c("Import a file ..." = ""))
           ),
           column(4,
                  align = "left",
