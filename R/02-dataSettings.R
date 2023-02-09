@@ -4,7 +4,7 @@
 #'
 #' @param id id of module
 #' @param label label of settings
-#'
+#' @inheritParams shiny::numericInput
 #' @rdname dataSettings
 dataSettingsUI <- function(id, label = "Data Settings") {
 
@@ -86,14 +86,21 @@ selectColumnsUI <- function(id, label, emptyChoices) {
 
   ns <- NS(id)
   div(
-    selectInput(ns("type"),
-                label = paste("Pre-period Range", label),
-                choices = c("Single point" = "point",
-                            "Interval" = "interval",
-                            "Mean + 1 SD uncertainty" = "meanSD",
-                            "Mean + 1 SEM SD uncertainty" = "meanSEMSD",
-                            "Credible Interval" = "credInterval"),
-                selected = "point"),
+    # numericInput("pre_min & pre_max",
+    #             label = paste("Pre-period Range", label)
+    #             ),
+    numericInput("obs", "Observations:", 10, min = 1, max = 100),
+    verbatimTextOutput("value"),
+    # numericRangeInput(
+    #   inputId = "my_id", label = "Numeric Range Input:",
+    #   value = c(100, 400)
+    # ),
+    # verbatimTextOutput(outputId = "res1"),
+    
+    dateRangeInput("date",
+                   label = 'Date range input',
+                   start = Sys.Date() - 7, end = Sys.Date()
+    ),
     conditionalPanel(
       condition = "input.type == 'point'",
       ns = ns,
@@ -101,8 +108,8 @@ selectColumnsUI <- function(id, label, emptyChoices) {
                   label = paste("Select", label),
                   choices = emptyChoices),
     ),
-    conditionalPanel(
-      condition = "input.type == 'interval'",
+    conditionalPanel( 
+      condition = "input.type == 'interval'", # IF DATE FORMAT IS YES, THEN is.Date() the range. make changes below
       ns = ns,
       selectInput(ns("Min"),
                   label = paste("Lower bound for", label),
