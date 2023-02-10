@@ -97,9 +97,22 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     # ),
     # verbatimTextOutput(outputId = "res1"),
     
-    dateRangeInput("date",
-                   label = 'Date range input',
-                   start = Sys.Date() - 7, end = Sys.Date()
+    checkboxInput(
+      inputId = ns("dateOrNot"),
+      label = "Are Input Periods Dates?",
+      value = defaultModelSettings()$outlier,
+      width = "100%"
+    ),
+    conditionalPanel(condition = "input.fixed == 1",
+                     ns = ns,
+                     dateRangeInput("date",
+                                    label = 'Date range input',
+                                    start = Sys.Date() - 7, end = Sys.Date()
+                     ),
+                     dateRangeInput("date",
+                                    label = 'Date range input',
+                                    start = Sys.Date() - 7, end = Sys.Date()
+                     )
     ),
     conditionalPanel(
       condition = "input.type == 'point'",
@@ -111,46 +124,46 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     conditionalPanel( 
       condition = "input.type == 'interval'", # IF DATE FORMAT IS YES, THEN is.Date() the range. make changes below
       ns = ns,
-      selectInput(ns("Min"),
-                  label = paste("Lower bound for", label),
-                  choices = emptyChoices),
-      selectInput(ns("Max"),
-                  label = paste("Upper bound for", label),
-                  choices = emptyChoices)
+      # selectInput(ns("Min"),
+      #             label = paste("Lower bound for", label),
+      #             choices = emptyChoices),
+      # selectInput(ns("Max"),
+      #             label = paste("Upper bound for", label),
+      #             choices = emptyChoices)
     ),
-    conditionalPanel(
-      condition = "input.type == 'credInterval'",
-      ns = ns,
-      selectInput(ns("CredMin"),
-                  label = paste("Lower bound for", label),
-                  choices = emptyChoices),
-      selectInput(ns("CredMax"),
-                  label = paste("Upper bound for", label),
-                  choices = emptyChoices),
-      sliderInput(ns("CredPercent"),
-                  label = "Credibility level",
-                  min = 0, max = 100, post  = " %", value = 95)
-    ),
-    conditionalPanel(
-      condition = "input.type == 'meanSD'",
-      ns = ns,
-      selectInput(ns("Mean"),
-                  label = paste("Mean of", label),
-                  choices = emptyChoices),
-      selectInput(ns("SD"),
-                  label = paste("SD of", label),
-                  choices = emptyChoices)
-    ),
-    conditionalPanel(
-      condition = "input.type == 'meanSEMSD'",
-      ns = ns,
-      selectInput(ns("Mean2"),
-                  label = paste("Mean of", label),
-                  choices = emptyChoices),
-      selectInput(ns("SEMSD"),
-                  label = paste("SEM SD of", label),
-                  choices = emptyChoices)
-    )
+    # conditionalPanel(
+    #   condition = "input.type == 'credInterval'",
+    #   ns = ns,
+    #   selectInput(ns("CredMin"),
+    #               label = paste("Lower bound for", label),
+    #               choices = emptyChoices),
+    #   selectInput(ns("CredMax"),
+    #               label = paste("Upper bound for", label),
+    #               choices = emptyChoices),
+    #   sliderInput(ns("CredPercent"),
+    #               label = "Credibility level",
+    #               min = 0, max = 100, post  = " %", value = 95)
+    # ),
+    # conditionalPanel(
+    #   condition = "input.type == 'meanSD'",
+    #   ns = ns,
+    #   selectInput(ns("Mean"),
+    #               label = paste("Mean of", label),
+    #               choices = emptyChoices),
+    #   selectInput(ns("SD"),
+    #               label = paste("SD of", label),
+    #               choices = emptyChoices)
+    # ),
+    # conditionalPanel(
+    #   condition = "input.type == 'meanSEMSD'",
+    #   ns = ns,
+    #   selectInput(ns("Mean2"),
+    #               label = paste("Mean of", label),
+    #               choices = emptyChoices),
+    #   selectInput(ns("SEMSD"),
+    #               label = paste("SEM SD of", label),
+    #               choices = emptyChoices)
+    # )
   )
 }
 
