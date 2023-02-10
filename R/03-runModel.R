@@ -67,28 +67,28 @@ runModelUI <- function(id, title) {
                                          "Median estimation" = "Est_Median"),
                              selected = 1)
           ),
-          column(4,
-                 selectInput(inputId = ns("errorType"),
-                             label = "Select type of uncertainty",
-                             choices = c("SEM" = "SEM",
-                                         "SD" = "SD",
-                                         "SEM Total" = "SEMTotal"),
-                             selected = 1),
-                 conditionalPanel(
-                   condition =
-                     "input.errorType == 'SEM' | input.errorType == 'SEMTotal'",
-                   ns = ns,
-                   sliderInput(ns("SEQuantile"), "Quantile Coverage",
-                               value = 0.95, min = 0.5, max = 0.999,
-                               step = 0.001)
-                 ),
-                 conditionalPanel(
-                   condition = "input.errorType == 'SD'",
-                   ns = ns,
-                   sliderInput(ns("SDFactor"), "SD Factor", value = 2,
-                               min = 0.5, max = 3, step = 0.1)
-                 )
-          )
+          # column(4,
+          #        selectInput(inputId = ns("errorType"),
+          #                    label = "Select type of uncertainty",
+          #                    choices = c("SEM" = "SEM",
+          #                                "SD" = "SD",
+          #                                "SEM Total" = "SEMTotal"),
+          #                    selected = 1),
+          #        conditionalPanel(
+          #          condition =
+          #            "input.errorType == 'SEM' | input.errorType == 'SEMTotal'",
+          #          ns = ns,
+          #          sliderInput(ns("SEQuantile"), "Quantile Coverage",
+          #                      value = 0.95, min = 0.5, max = 0.999,
+          #                      step = 0.001)
+          #        ),
+          #        conditionalPanel(
+          #          condition = "input.errorType == 'SD'",
+          #          ns = ns,
+          #          sliderInput(ns("SDFactor"), "SD Factor", value = 2,
+          #                      min = 0.5, max = 3, step = 0.1)
+          #        )
+          # )
         )
       )
     )

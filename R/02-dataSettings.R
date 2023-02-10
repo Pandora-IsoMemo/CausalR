@@ -13,10 +13,10 @@ dataSettingsUI <- function(id, label = "Data Settings") {
   list(
     tags$h4(label),
     selectColumnsUI(id = ns("x"), label = "x", emptyChoices = emptyColumnChoices()),
-    selectColumnsUI(id = ns("y"), label = "y", emptyChoices = emptyColumnChoices()),
-    checkboxInput(inputId = ns("outlierD"),
-                  label = "Remove data outliers in y",
-                  value = defaultDataOutlier()$outlierD, width = "100%"),
+    
+  #   checkboxInput(inputId = ns("outlierD"),
+  #                 label = "Remove data outliers in y",
+  #                 value = defaultDataOutlier()$outlierD, width = "100%"),
     conditionalPanel(
       condition = "input.outlierD == true",
       ns = ns,
@@ -89,7 +89,9 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     # numericInput("pre_min & pre_max",
     #             label = paste("Pre-period Range", label)
     #             ),
-    numericInput("obs", "Observations:", 10, min = 1, max = 100),
+    numericInput("obs", "pre_min & pre_max:", 10, min = 1, max = 100),
+    verbatimTextOutput("value"),
+    numericInput("obs", "post_min & post_max:", 10, min = 1, max = 100),
     verbatimTextOutput("value"),
     # numericRangeInput(
     #   inputId = "my_id", label = "Numeric Range Input:",
@@ -98,12 +100,12 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     # verbatimTextOutput(outputId = "res1"),
     
     checkboxInput(
-      inputId = ns("dateOrNot"),
-      label = "Are Input Periods Dates?",
-      value = defaultModelSettings()$outlier,
-      width = "100%"
+       inputId = ns("dateOrNot"),
+       label = "Are Input Periods Dates?",
+      # value = defaultModelSettings()$outlier,
+      # width = "100%"
     ),
-    conditionalPanel(condition = "input.fixed == 1",
+    conditionalPanel(condition = "input.choice == 1",
                      ns = ns,
                      dateRangeInput("date",
                                     label = 'Date range input',
@@ -117,9 +119,9 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     conditionalPanel(
       condition = "input.type == 'point'",
       ns = ns,
-      selectInput(ns("Point"),
-                  label = paste("Select", label),
-                  choices = emptyChoices),
+      # selectInput(ns("Point"),
+      #             label = paste("Select", label),
+      #             choices = emptyChoices),
     ),
     conditionalPanel( 
       condition = "input.type == 'interval'", # IF DATE FORMAT IS YES, THEN is.Date() the range. make changes below
@@ -237,88 +239,88 @@ defaultColSelection <- function(columnNames = NULL) {
 #'
 #' @rdname dataSettings
 modelSettingsUI <- function(id, label = "Model Settings") {
-  ns <- NS(id)
-
-  list(
-    tags$h4(label),
-    checkboxInput(
-      inputId = ns("outlier"),
-      label = "Remove model outliers",
-      value = defaultModelSettings()$outlier,
-      width = "100%"
-    ),
-    conditionalPanel(
-      condition = "input.outlier == true",
-      sliderInput(
-        inputId = ns("outlierValue"),
-        label = "Model outlier threshold in standard deviations",
-        min = 2,
-        max = 8,
-        value = defaultModelSettings()$outlierValue,
-        step = 0.1
-      ),
-      ns = ns
-    ),
-    radioButtons(
-      inputId = ns("const"),
-      label = "Extrapolation",
-      selected = defaultModelSettings()$const,
-      choices = c("linear" = 2, "constant" = 1)
-    ),
-    checkboxInput(
-      inputId = ns("sdVar"),
-      label = "Variable standard deviation",
-      value = defaultModelSettings()$sdVar
-    ),
-    sliderInput(
-      inputId = ns("smoothConst"),
-      label = "Amount of smoothing",
-      value = defaultModelSettings()$smoothConst,
-      min = 0.2,
-      max = 5
-    ),
-    checkboxInput(
-      inputId = ns("advancedSettings"),
-      label = "Use advanced settings",
-      value = defaultModelSettings()$advancedSettings,
-      width = "100%"
-    ),
-    conditionalPanel(
-      condition = "input.advancedSettings == true",
-      ns = ns,
-      sliderInput(
-        inputId = ns("K"),
-        label = "Number of basis functions",
-        value = defaultModelSettings()$K,
-        min = 4,
-        max = 150
-      ),
-      sliderInput(
-        inputId = ns("burnin"),
-        label = "Number of burnin iterations",
-        value = defaultModelSettings()$burnin,
-        min = 100,
-        max = 10000,
-        step = 100
-      ),
-      sliderInput(
-        inputId = ns("iter"),
-        label = "Number of total iterations",
-        value = defaultModelSettings()$iter,
-        min = 1000,
-        max = 250000,
-        step = 1000
-      ),
-      sliderInput(
-        inputId = ns("nChains"),
-        label = "Number of MCMC chains",
-        value = defaultModelSettings()$nChains,
-        min = 1,
-        max = 16,
-        step = 1
-      )
-    )
-  )
+  # ns <- NS(id)
+  # 
+  # list(
+  #   tags$h4(label),
+  #   checkboxInput(
+  #     inputId = ns("outlier"),
+  #     label = "Remove model outliers",
+  #     value = defaultModelSettings()$outlier,
+  #     width = "100%"
+  #   ),
+  #   conditionalPanel(
+  #     condition = "input.outlier == true",
+  #     sliderInput(
+  #       inputId = ns("outlierValue"),
+  #       label = "Model outlier threshold in standard deviations",
+  #       min = 2,
+  #       max = 8,
+  #       value = defaultModelSettings()$outlierValue,
+  #       step = 0.1
+  #     ),
+  #     ns = ns
+  #   ),
+  #   radioButtons(
+  #     inputId = ns("const"),
+  #     label = "Extrapolation",
+  #     selected = defaultModelSettings()$const,
+  #     choices = c("linear" = 2, "constant" = 1)
+  #   ),
+  #   checkboxInput(
+  #     inputId = ns("sdVar"),
+  #     label = "Variable standard deviation",
+  #     value = defaultModelSettings()$sdVar
+  #   ),
+  #   sliderInput(
+  #     inputId = ns("smoothConst"),
+  #     label = "Amount of smoothing",
+  #     value = defaultModelSettings()$smoothConst,
+  #     min = 0.2,
+  #     max = 5
+  #   ),
+  #   checkboxInput(
+  #     inputId = ns("advancedSettings"),
+  #     label = "Use advanced settings",
+  #     value = defaultModelSettings()$advancedSettings,
+  #     width = "100%"
+  #   ),
+  #   conditionalPanel(
+  #     condition = "input.advancedSettings == true",
+  #     ns = ns,
+  #     sliderInput(
+  #       inputId = ns("K"),
+  #       label = "Number of basis functions",
+  #       value = defaultModelSettings()$K,
+  #       min = 4,
+  #       max = 150
+  #     ),
+  #     sliderInput(
+  #       inputId = ns("burnin"),
+  #       label = "Number of burnin iterations",
+  #       value = defaultModelSettings()$burnin,
+  #       min = 100,
+  #       max = 10000,
+  #       step = 100
+  #     ),
+  #     sliderInput(
+  #       inputId = ns("iter"),
+  #       label = "Number of total iterations",
+  #       value = defaultModelSettings()$iter,
+  #       min = 1000,
+  #       max = 250000,
+  #       step = 1000
+  #     ),
+  #     sliderInput(
+  #       inputId = ns("nChains"),
+  #       label = "Number of MCMC chains",
+  #       value = defaultModelSettings()$nChains,
+  #       min = 1,
+  #       max = 16,
+  #       step = 1
+  #     )
+  #  )
+  #)
 }
 
 #' Server function for model settings
