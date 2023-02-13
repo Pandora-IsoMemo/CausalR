@@ -4,9 +4,9 @@
 #'
 #' @param id id of module
 #' @param label label of settings
-#' @inheritParams shiny::numericInput
+#' @inheritParams shiny::numericInput #numericRangeInput,numericInput
 #' @rdname dataSettings
-dataSettingsUI <- function(id, label = "Data Settings") {
+dataSettingsUI <- function(id, label = "Time Series Settings") {
 
   ns <- NS(id)
 
@@ -14,9 +14,7 @@ dataSettingsUI <- function(id, label = "Data Settings") {
     tags$h4(label),
     selectColumnsUI(id = ns("x"), label = "x", emptyChoices = emptyColumnChoices()),
     
-  #   checkboxInput(inputId = ns("outlierD"),
-  #                 label = "Remove data outliers in y",
-  #                 value = defaultDataOutlier()$outlierD, width = "100%"),
+
     conditionalPanel(
       condition = "input.outlierD == true",
       ns = ns,
@@ -89,83 +87,35 @@ selectColumnsUI <- function(id, label, emptyChoices) {
     # numericInput("pre_min & pre_max",
     #             label = paste("Pre-period Range", label)
     #             ),
-    numericInput("obs", "pre_min & pre_max:", 10, min = 1, max = 100),
+    numericInput("obs", "pre_min:", 0, min = 1, max = 100),
     verbatimTextOutput("value"),
-    numericInput("obs", "post_min & post_max:", 10, min = 1, max = 100),
+    numericInput("obs", "pre_max:", 0, min = 1, max = 100),
     verbatimTextOutput("value"),
-    # numericRangeInput(
-    #   inputId = "my_id", label = "Numeric Range Input:",
-    #   value = c(100, 400)
-    # ),
-    # verbatimTextOutput(outputId = "res1"),
+    numericInput("obs", "post_min:", 0, min = 1, max = 100),
+    verbatimTextOutput("value"),
+    numericInput("obs", "post_max:", 0, min = 1, max = 100),
+    verbatimTextOutput("value"),
     
-    checkboxInput(
-       inputId = ns("dateOrNot"),
-       label = "Are Input Periods Dates?",
-      # value = defaultModelSettings()$outlier,
-      # width = "100%"
-    ),
-    conditionalPanel(condition = "input.choice == 1",
-                     ns = ns,
-                     dateRangeInput("date",
-                                    label = 'Date range input',
-                                    start = Sys.Date() - 7, end = Sys.Date()
-                     ),
-                     dateRangeInput("date",
-                                    label = 'Date range input',
-                                    start = Sys.Date() - 7, end = Sys.Date()
-                     )
-    ),
-    conditionalPanel(
-      condition = "input.type == 'point'",
-      ns = ns,
-      # selectInput(ns("Point"),
-      #             label = paste("Select", label),
-      #             choices = emptyChoices),
-    ),
-    conditionalPanel( 
-      condition = "input.type == 'interval'", # IF DATE FORMAT IS YES, THEN is.Date() the range. make changes below
-      ns = ns,
-      # selectInput(ns("Min"),
-      #             label = paste("Lower bound for", label),
-      #             choices = emptyChoices),
-      # selectInput(ns("Max"),
-      #             label = paste("Upper bound for", label),
-      #             choices = emptyChoices)
-    ),
-    # conditionalPanel(
-    #   condition = "input.type == 'credInterval'",
-    #   ns = ns,
-    #   selectInput(ns("CredMin"),
-    #               label = paste("Lower bound for", label),
-    #               choices = emptyChoices),
-    #   selectInput(ns("CredMax"),
-    #               label = paste("Upper bound for", label),
-    #               choices = emptyChoices),
-    #   sliderInput(ns("CredPercent"),
-    #               label = "Credibility level",
-    #               min = 0, max = 100, post  = " %", value = 95)
-    # ),
-    # conditionalPanel(
-    #   condition = "input.type == 'meanSD'",
-    #   ns = ns,
-    #   selectInput(ns("Mean"),
-    #               label = paste("Mean of", label),
-    #               choices = emptyChoices),
-    #   selectInput(ns("SD"),
-    #               label = paste("SD of", label),
-    #               choices = emptyChoices)
-    # ),
-    # conditionalPanel(
-    #   condition = "input.type == 'meanSEMSD'",
-    #   ns = ns,
-    #   selectInput(ns("Mean2"),
-    #               label = paste("Mean of", label),
-    #               choices = emptyChoices),
-    #   selectInput(ns("SEMSD"),
-    #               label = paste("SEM SD of", label),
-    #               choices = emptyChoices)
-    # )
+  ### Date range option ###
+
+      checkboxInput(
+        inputId = ns("dateOrNot"),
+        label = "Are Input Periods Dates?",
+        value = defaultModelSettings()$outlier,
+        width = "100%"
+      ),
+      conditionalPanel(
+        condition = "input.dateOrNot == true",
+        dateRangeInput("date",
+                       label = 'Pre-period date range',
+                       start = Sys.Date() - 7, end = Sys.Date()
+        ),
+        dateRangeInput("date",
+                       label = 'Post-period date range',
+                       start = Sys.Date() - 7, end = Sys.Date()
+        ),
+        ns = ns
+      ),
   )
 }
 
