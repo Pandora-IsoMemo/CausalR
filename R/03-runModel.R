@@ -19,7 +19,7 @@ runModelUI <- function(id, title) {
           column(4,
                  align = "left",
                  style = "margin-top: 16px;",
-                 actionButton(ns("loadFile"), "Load", width = "90%")
+                 actionButton(ns("loadFile"), "Load Example", width = "90%")
           )),
         tags$br(),
         dataSettingsUI(ns("settings"), "Data Settings"),
@@ -98,8 +98,10 @@ runModelUI <- function(id, title) {
 #' @export
 #' @rdname shinyModule
 #' @param loadedFiles (reactive) list of uploaded files
-runModel <- function(input, output, session, loadedFiles) {
-
+runModel <- function(input, output, session, loadedFiles) { 
+  # THIS SHOULD BE CAUSAL R model run:: impact <- CausalImpact(data, pre.period, post.period)
+  # then automatically plot output:: plot(impact)
+  print(loadedFiles)
   savedData <- reactiveVal(list())
   activeFileData <- reactiveVal(NULL)
   currentNamesOfNumCols <- reactiveVal(emptyColumnChoices())

@@ -2,8 +2,8 @@
 library("shiny")
 library("CausalImpact")
 function (input, output, session) {
-  loadedFiles <- callModule(uploadFiles, "files")
-  #savedPlots <- callModule(runModel, "model", loadedFiles = loadedFiles)
+  #loadedFiles <- callModule(uploadFiles, "files")
+  # savedPlots <- callModule(runModel, "model", loadedFiles = loadedFiles)
   # callModule(postProcessing, "post", savedData = savedPlots)
   # callModule(stylePlot, "style", savedData = savedPlots)
   # callModule(addMorePoints, "addPoints", savedData = savedPlots)
@@ -12,15 +12,18 @@ function (input, output, session) {
   # callModule(multiplePlots, "multiple", savedData = savedPlots)
   # callModule(multiplePredictions, "multiplePreds", savedData = savedPlots,
   #            loadedFiles = loadedFiles)
+  
+  #loadedFiles <- function({
   set.seed(1)
   x1 <- 100 + arima.sim(model = list(ar = 0.999), n = 100)
   y <- 1.2 * x1 + rnorm(100)
   y[71:100] <- y[71:100] + 10
-  data <- cbind(y, x1)
-  matplot(data, type = "l")
-  
-  output$plot <- renderPlot({
-    matplot(data, type = "l")
+  loadedFiles <- cbind(y, x1)
+  print(loadedFiles)
+  #   matplot(data, type = "l")
+  # }
+  # output$plot <- renderPlot({
+  #   matplot(data, type = "l")
     # sort by class
     # characters$Character <- factor(characters$Character, 
     #                                levels = characters$Character[order(characters$Class)])
@@ -29,5 +32,5 @@ function (input, output, session) {
     #   geom_bar(stat="identity", width=0.8) +
     #   labs(x="Character", y=input$y_var) + coord_flip()
     
-  })
+  #})
 }
