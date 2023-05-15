@@ -1,4 +1,13 @@
 # CausalR
+last edit: by Jian May 12, 2023
+
+News: Feb 12:
+- Server.R
+  > borrow idea from https://github.com/yhejazi/tutorials/blob/main/rshiny/server.R 
+  
+  > modified the server file {https://github.com/Pandora-IsoMemo/CausalR/blob/feat/inputBox/inst/app/server.R}
+  
+  > TODO: make sure the function works and Renders the plot to the APP. 
 
 App 2: Detecting events in time series and assessing impact of events
 Often we are interested in detecting the timing of an event from the time series data. For instance, the Roman shipwreck example shown previously we see a sharp decline at c. 150 AD. This matches a massive pandemic in the Roman Empire that killed about one third of its population. Conversely, we might be interested in knowing what was the impact of an event like a pandemic or a political decision. The Roman Empire was divided into two parts in the 4th century (East and West) and we would like to know what was the impact of this decision on trade (via the shipwreck proxy).
