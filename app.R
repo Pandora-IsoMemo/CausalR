@@ -26,10 +26,7 @@ ui <- fluidPage(
       actionButton("go", "Model")
     ),
     mainPanel(
-<<<<<<< HEAD
       plotOutput("matplot"),
-=======
->>>>>>> a0c29d204a7cabe56b4eb1c4972da1c85fd624b9
       plotOutput("cumulative_plot"),
       verbatimTextOutput("results")
     )
@@ -61,14 +58,11 @@ server <- function(input, output) {
     CausalImpact(data(), pre_period(), post_period())
   })
   
-<<<<<<< HEAD
   output$matplot <- renderPlot({
     if (is.null(data())) return(NULL)
     matplot(data(),type='l',main = "Time Series Intervention")
   })
   
-=======
->>>>>>> a0c29d204a7cabe56b4eb1c4972da1c85fd624b9
   output$cumulative_plot <- renderPlot({
     if (is.null(impact_model())) return(NULL)
     plot(impact_model())
