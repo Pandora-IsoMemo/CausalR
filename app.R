@@ -17,13 +17,13 @@ library(readxl)
 
 ui <- fluidPage(
   shiny::fluidRow(
-    shinydashboard::box(#title = "Intro Page", "Some description...", 
+    shinydashboard::box(
       shiny::actionButton(inputId='ab1', label="Need Help?", 
                           icon = icon("th"), 
                           onclick ="window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')")
     )
   ),
-  titlePanel("MPI Causal Impact Dashboard"),
+  titlePanel("MPI Causal Impact Dashboard: ISSUE - Date ranges are not subseting the df correctly, look at date formating"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Upload File"),
