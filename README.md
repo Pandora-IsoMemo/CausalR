@@ -1,6 +1,8 @@
 # CausalR
 last edit: by Jian May 12, 2023
 
+Intall instructions: https://youtu.be/jlT15oblKBE
+
 News: Feb 12:
 - Server.R
   > borrow idea from https://github.com/yhejazi/tutorials/blob/main/rshiny/server.R 
