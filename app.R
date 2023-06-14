@@ -23,7 +23,7 @@ ui <- fluidPage(
                           onclick ="window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')")
     )
   ),
-  titlePanel("MPI Causal Impact Dashboard: ISSUE - Date ranges are not subseting the df correctly, look at date formating"),
+  titlePanel("MPI Causal Impact Dashboard"), # : ISSUE - Date ranges are not subseting the df correctly, look at date formating
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Upload File"),
