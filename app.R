@@ -17,15 +17,60 @@ library(CausalImpact)
 library(ggplot2)
 library(readxl)
 
+# ui <- fluidPage(
+#   shiny::fluidRow(
+#     shinydashboard::box(
+#       shiny::actionButton(inputId='ab1', label="Need Help?", 
+#                           icon = icon("th"), 
+#                           onclick ="window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')")
+#     )
+#   ),
+#   titlePanel("MPI Causal Impact Dashboard"), # : ISSUE - Date ranges are not subseting the df correctly, look at date formating
+#   sidebarLayout(
+#     sidebarPanel(
+#       fileInput("file", "Upload File"),
+#       checkboxInput("header", "Header", TRUE),
+#       checkboxInput("treat_dates", "Treat periods as dates"),
+#       numericInput("min_pre_period", "Minimum Pre-Period Index Value", value = 1),
+#       numericInput("max_pre_period", "Maximum Pre-Period Index Value", value = 70),
+#       numericInput("min_post_period", "Minimum Post-Period Index Value", value = 71),
+#       numericInput("max_post_period", "Maximum Post-Period Index Value", value = 100),
+#       conditionalPanel(
+#         condition = "input.treat_dates",
+#         dateInput("min_pre_period_date", "Minimum Pre-Period Date","2014-01-01"),
+#         dateInput("max_pre_period_date", "Maximum Pre-Period Date","2014-03-11"),
+#         dateInput("min_post_period_date", "Minimum Post-Period Date","2014-03-12"),
+#         dateInput("max_post_period_date", "Maximum Post-Period Date","2014-04-10")
+#       ),
+#       actionButton("go", "Model"), 
+#       br(),
+#       br(),
+#       tableOutput("table")
+#     ),
+#     mainPanel(
+#       plotOutput("matplot"),
+#       plotOutput("cumulative_plot"),
+#       verbatimTextOutput("results")
+#     )
+#   )
+# )
+
+
+
+
+
 ui <- fluidPage(
   shiny::fluidRow(
     shinydashboard::box(
-      shiny::actionButton(inputId='ab1', label="Need Help?", 
-                          icon = icon("th"), 
-                          onclick ="window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')")
+      shiny::actionButton(
+        inputId = 'ab1',
+        label = "Need Help?",
+        icon = icon("th"),
+        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')"
+      )
     )
   ),
-  titlePanel("MPI Causal Impact Dashboard"), # : ISSUE - Date ranges are not subseting the df correctly, look at date formating
+  titlePanel("MPI Causal Impact Dashboard"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Upload File"),
@@ -37,12 +82,19 @@ ui <- fluidPage(
       numericInput("max_post_period", "Maximum Post-Period Index Value", value = 100),
       conditionalPanel(
         condition = "input.treat_dates",
-        dateInput("min_pre_period_date", "Minimum Pre-Period Date","2014-01-01"),
-        dateInput("max_pre_period_date", "Maximum Pre-Period Date","2014-03-11"),
-        dateInput("min_post_period_date", "Minimum Post-Period Date","2014-03-12"),
-        dateInput("max_post_period_date", "Maximum Post-Period Date","2014-04-10")
+        dateInput("min_pre_period_date", "Minimum Pre-Period Date", "2014-01-01"),
+        dateInput("max_pre_period_date", "Maximum Pre-Period Date", "2014-03-11"),
+        dateInput("min_post_period_date", "Minimum Post-Period Date", "2014-03-12"),
+        dateInput("max_post_period_date", "Maximum Post-Period Date", "2014-04-10")
       ),
-      actionButton("go", "Model"), 
+      checkboxInput("use_bsts_model", "Use BTST Model as alternative"),
+      conditionalPanel(
+        condition = "input.use_bsts_model",
+        textInput("bsts_model_text", "Custom BSTS Model code below: ", 
+                  value = "ss <- AddLocalLevel(list(), y)  bsts.model <- bsts(y ~ x1, ss, niter = 1000)\n impact <- CausalImpact(bsts.model = bsts.model, post.period.response = post.period.response)"),
+        
+        ),
+      actionButton("go", "Model"),
       br(),
       br(),
       tableOutput("table")
@@ -54,6 +106,7 @@ ui <- fluidPage(
     )
   )
 )
+
 
 server <- function(input, output) {
   
