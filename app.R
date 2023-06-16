@@ -65,17 +65,20 @@ server <- function(input, output) {
     } else {
       return(NULL)
     }
-    #df[] <- lapply(df, as.numeric)
-    df
+    if (input$treat_dates){
+      return(df)
+    } else {
+    df = subset(df, select = c(y,x1) )
+    return(df)
+    }
   })
   
-
     pre_period <- reactive({
       min_pre <- input$min_pre_period
       max_pre <- input$max_pre_period
       if (input$treat_dates) {
-        min_pre <- as.Date(input$min_pre_period)
-        max_pre <- as.Date(input$max_pre_period)
+        min_pre <- as.Date(input$min_pre_period_date)
+        max_pre <- as.Date(input$max_pre_period_date)
       }
       c(min_pre, max_pre)
     })
@@ -84,8 +87,8 @@ server <- function(input, output) {
       min_post <- input$min_post_period
       max_post <- input$max_post_period
       if (input$treat_dates) {
-        min_post <- as.Date(input$min_post_period)
-        max_post <- as.Date(input$max_post_period)
+        min_post <- as.Date(input$min_post_period_date)
+        max_post <- as.Date(input$max_post_period_date)
       }
       c(min_post, max_post)
     })
@@ -94,7 +97,12 @@ server <- function(input, output) {
   
   impact_model <- eventReactive(input$go, {
     if (is.null(data())) return(NULL)
-    CausalImpact(data(), pre_period(), post_period())
+    
+    if (input$treat_dates) {
+      dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
+      return(CausalImpact(dataTime, pre_period(), post_period()))
+    }
+    return(CausalImpact(data(), pre_period(), post_period()))
   })
   
   output$matplot <- renderPlot({
