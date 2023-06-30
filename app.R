@@ -10,53 +10,10 @@
 #
 
 
-
-
 library(shiny)
 library(CausalImpact)
 library(ggplot2)
 library(readxl)
-
-# ui <- fluidPage(
-#   shiny::fluidRow(
-#     shinydashboard::box(
-#       shiny::actionButton(inputId='ab1', label="Need Help?", 
-#                           icon = icon("th"), 
-#                           onclick ="window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')")
-#     )
-#   ),
-#   titlePanel("MPI Causal Impact Dashboard"), # : ISSUE - Date ranges are not subseting the df correctly, look at date formating
-#   sidebarLayout(
-#     sidebarPanel(
-#       fileInput("file", "Upload File"),
-#       checkboxInput("header", "Header", TRUE),
-#       checkboxInput("treat_dates", "Treat periods as dates"),
-#       numericInput("min_pre_period", "Minimum Pre-Period Index Value", value = 1),
-#       numericInput("max_pre_period", "Maximum Pre-Period Index Value", value = 70),
-#       numericInput("min_post_period", "Minimum Post-Period Index Value", value = 71),
-#       numericInput("max_post_period", "Maximum Post-Period Index Value", value = 100),
-#       conditionalPanel(
-#         condition = "input.treat_dates",
-#         dateInput("min_pre_period_date", "Minimum Pre-Period Date","2014-01-01"),
-#         dateInput("max_pre_period_date", "Maximum Pre-Period Date","2014-03-11"),
-#         dateInput("min_post_period_date", "Minimum Post-Period Date","2014-03-12"),
-#         dateInput("max_post_period_date", "Maximum Post-Period Date","2014-04-10")
-#       ),
-#       actionButton("go", "Model"), 
-#       br(),
-#       br(),
-#       tableOutput("table")
-#     ),
-#     mainPanel(
-#       plotOutput("matplot"),
-#       plotOutput("cumulative_plot"),
-#       verbatimTextOutput("results")
-#     )
-#   )
-# )
-
-
-
 
 
 ui <- fluidPage(
@@ -70,7 +27,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("MPI Causal Impact Dashboard"),
+  titlePanel("MPI Causal Impact Dashboard v.001"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Upload File"),
@@ -90,9 +47,12 @@ ui <- fluidPage(
       checkboxInput("use_bsts_model", "Use BTST Model as alternative"),
       conditionalPanel(
         condition = "input.use_bsts_model",
-        textInput("bsts_model_text", "Custom BSTS Model code below: ", 
-                  value = "ss <- AddLocalLevel(list(), y)  bsts.model <- bsts(y ~ x1, ss, niter = 1000)\n impact <- CausalImpact(bsts.model = bsts.model, post.period.response = post.period.response)"),
-        
+        #textInput("bsts_model_text", "Custom BSTS Model code below: ", 
+        #          value = "ss <- AddLocalLevel(list(), y)  bsts.model <- bsts(y ~ x1, ss, niter = 1000)\n impact <- CausalImpact(bsts.model = bsts.model, post.period.response = post.period.response)"),
+        textAreaInput("custom_code_text", "Custom Code:", 
+                      value = "ss <- AddLocalLevel(list(), y)  
+                      bsts.model <- bsts(y ~ x1, ss, niter = 1000)
+                      "),
         ),
       actionButton("go", "Model"),
       br(),
@@ -147,8 +107,7 @@ server <- function(input, output) {
       }
       c(min_post, max_post)
     })
-  # pre_period <- reactive({c(input$min_pre_period, input$max_pre_period)})
-  # post_period <- reactive({c(input$min_post_period, input$max_post_period)})
+
   
   impact_model <- eventReactive(input$go, {
     if (is.null(data())) return(NULL)
@@ -156,6 +115,18 @@ server <- function(input, output) {
     if (input$treat_dates) {
       dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
       return(CausalImpact(dataTime, pre_period(), post_period()))
+    }
+    if (input$use_bsts_model) {
+      
+      y <- as.ts(data()$y)
+      x1 <- as.ts(data()$y)
+      post.period.response <- y[post_period()[1] : post_period()[2]]
+      y[post_period()[1] : post_period()[2]] <- NA
+      #eval(parse(text = input$custom_code_text))
+      ss <- AddLocalLevel(list(), y)
+      bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
+      return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
+      
     }
     return(CausalImpact(data(), pre_period(), post_period()))
   })
