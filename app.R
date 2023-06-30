@@ -119,12 +119,12 @@ server <- function(input, output) {
     if (input$use_bsts_model) {
       
       y <- as.ts(data()$y)
-      x1 <- as.ts(data()$y)
+      x1 <- as.ts(data()$x1)
       post.period.response <- y[post_period()[1] : post_period()[2]]
       y[post_period()[1] : post_period()[2]] <- NA
-      #eval(parse(text = input$custom_code_text))
-      ss <- AddLocalLevel(list(), y)
-      bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
+      eval(parse(text = input$custom_code_text))
+      #ss <- AddLocalLevel(list(), y)
+      #bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
       return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
       
     }
