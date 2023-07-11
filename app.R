@@ -15,7 +15,6 @@ library(CausalImpact)
 library(ggplot2)
 library(readxl)
 
-
 ui <- fluidPage(
   shiny::fluidRow(
     shinydashboard::box(
@@ -47,13 +46,9 @@ ui <- fluidPage(
       checkboxInput("use_bsts_model", "Use BTST Model as alternative"),
       conditionalPanel(
         condition = "input.use_bsts_model",
-        #textInput("bsts_model_text", "Custom BSTS Model code below: ",
-        #          value = "ss <- AddLocalLevel(list(), y)  bsts.model <- bsts(y ~ x1, ss, niter = 1000)\n impact <- CausalImpact(bsts.model = bsts.model, post.period.response = post.period.response)"),
         textAreaInput("custom_code_text", "Custom Code:",
-                      value = "ss <- AddLocalLevel(list(), y)
-                      bsts.model <- bsts(y ~ x1, ss, niter = 1000)
-                      "),
-        ),
+                      value = "ss <- AddLocalLevel(list(), y)\nbsts.model <- bsts(y ~ x1, ss, niter = 1000)")
+      ),
       actionButton("go", "Model"),
       br(),
       br(),
@@ -63,19 +58,23 @@ ui <- fluidPage(
       plotOutput("matplot"),
       conditionalPanel(
         condition = "output.matplot",
-        downloadButton('downloadpic1', 'Download Plot')),
+        textInput("title", "Plot Title", ""),
+        textInput("x_label", "X Axis Label", ""),
+        textInput("y_label", "Y Axis Label", ""),
+        downloadButton('downloadpic1', 'Download Plot')
+      ),
       plotOutput("cumulative_plot"),
       conditionalPanel(
         condition = "output.cumulative_plot",
-        downloadButton('downloadpic2', 'Download Plot')),
+        downloadButton('downloadpic2', 'Download Plot')
+      ),
       verbatimTextOutput("results")
     )
   )
 )
 
-
 server <- function(input, output) {
-
+  
   data <- reactive({
     req(input$file)
     inFile <- input$file
@@ -89,41 +88,41 @@ server <- function(input, output) {
     if (input$treat_dates){
       return(df)
     } else {
-    df = subset(df, select = c(y,x1) )
-    return(df)
+      df <- subset(df, select = c(y, x1))
+      return(df)
     }
   })
-
-    pre_period <- reactive({
-      min_pre <- input$min_pre_period
-      max_pre <- input$max_pre_period
-      if (input$treat_dates) {
-        min_pre <- as.Date(input$min_pre_period_date)
-        max_pre <- as.Date(input$max_pre_period_date)
-      }
-      c(min_pre, max_pre)
-    })
-
-    post_period <- reactive({
-      min_post <- input$min_post_period
-      max_post <- input$max_post_period
-      if (input$treat_dates) {
-        min_post <- as.Date(input$min_post_period_date)
-        max_post <- as.Date(input$max_post_period_date)
-      }
-      c(min_post, max_post)
-    })
-
-
+  
+  pre_period <- reactive({
+    min_pre <- input$min_pre_period
+    max_pre <- input$max_pre_period
+    if (input$treat_dates) {
+      min_pre <- as.Date(input$min_pre_period_date)
+      max_pre <- as.Date(input$max_pre_period_date)
+    }
+    c(min_pre, max_pre)
+  })
+  
+  post_period <- reactive({
+    min_post <- input$min_post_period
+    max_post <- input$max_post_period
+    if (input$treat_dates) {
+      min_post <- as.Date(input$min_post_period_date)
+      max_post <- as.Date(input$max_post_period_date)
+    }
+    c(min_post, max_post)
+  })
+  
+  
   impact_model <- eventReactive(input$go, {
     if (is.null(data())) return(NULL)
-
+    
     if (input$treat_dates) {
       dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
       return(CausalImpact(dataTime, pre_period(), post_period()))
     }
     if (input$use_bsts_model) {
-
+      
       y <- as.ts(data()$y)
       x1 <- as.ts(data()$x1)
       post.period.response <- y[post_period()[1] : post_period()[2]]
@@ -132,43 +131,43 @@ server <- function(input, output) {
       #ss <- AddLocalLevel(list(), y)
       #bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
       return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
-
+      
     }
     return(CausalImpact(data(), pre_period(), post_period()))
   })
-
+  
   output$matplot <- renderPlot({
     if (is.null(data())) return(NULL)
-    matplot(data(),type='l',main = "Time Series Intervention")
+    matplot(data(), type = 'l', main = input$title, xlab = input$x_label, ylab = input$y_label)
   })
-
+  
   output$cumulative_plot <- renderPlot({
     if (is.null(impact_model())) return(NULL)
     plot(impact_model())
   })
-
+  
   output$results <- renderPrint({
     if (is.null(impact_model())) return(NULL)
     summary(impact_model())
     writeLines("\nINTERPRETATION: \n")
     summary(impact_model(), 'report')
   })
-
+  
   output$table <- renderTable(head(data()))
-
+  
   output$downloadpic1 <- downloadHandler(
     filename = "matplot.png",
     content = function(file) {
       png(file)
-      matplot(data(),type='l',main = "Time Series Intervention")
+      matplot(data(), type = 'l', main = "Time Series Intervention", xlab = input$x_label, ylab = input$y_label)
       dev.off()
     })
-
+  
   output$downloadpic2 <- downloadHandler(
-    filename = function(){paste("cumulative_plot",'.png',sep='')},
+    filename = function(){paste("cumulative_plot", '.png', sep = '')},
     content = function(file){
-      ggsave(file,plot= plot(impact_model()))
-      })
+      ggsave(file, plot = plot(impact_model()))
+    })
 }
 
 shinyApp(ui = ui, server = server)
