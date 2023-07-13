@@ -29,19 +29,27 @@ ui <- fluidPage(
   titlePanel("MPI Causal Impact Dashboard v.001"),
   sidebarLayout(
     sidebarPanel(
-      fileInput("file", "Upload File"),
+      fileInput("file", "Please Upload File"),
       checkboxInput("header", "Header", TRUE),
       checkboxInput("treat_dates", "Treat periods as dates"),
-      numericInput("min_pre_period", "Minimum Pre-Period Index Value", value = 1),
-      numericInput("max_pre_period", "Maximum Pre-Period Index Value", value = 70),
+      div(style="display:flex",
+        numericInput("min_pre_period", "Minimum Pre-Period Index Value", value = 1),
+        numericInput("max_pre_period", "Maximum Pre-Period Index Value", value = 70)
+      ),
+      div(style="display:flex",
       numericInput("min_post_period", "Minimum Post-Period Index Value", value = 71),
-      numericInput("max_post_period", "Maximum Post-Period Index Value", value = 100),
+      numericInput("max_post_period", "Maximum Post-Period Index Value", value = 100)
+      ),
       conditionalPanel(
         condition = "input.treat_dates",
-        dateInput("min_pre_period_date", "Minimum Pre-Period Date", "2014-01-01"),
-        dateInput("max_pre_period_date", "Maximum Pre-Period Date", "2014-03-11"),
-        dateInput("min_post_period_date", "Minimum Post-Period Date", "2014-03-12"),
-        dateInput("max_post_period_date", "Maximum Post-Period Date", "2014-04-10")
+        div(style="display:flex",
+          dateInput("min_pre_period_date", "Min Pre-Period Date", "2014-01-01"),
+          dateInput("max_pre_period_date", "Max Pre-Period Date", "2014-03-11")
+        ),
+        div(style="display:flex",
+          dateInput("min_post_period_date", "Min Post-Period Date", "2014-03-12"),
+          dateInput("max_post_period_date", "Max Post-Period Date", "2014-04-10")
+        )
       ),
       checkboxInput("use_bsts_model", "Use BTST Model as alternative"),
       conditionalPanel(
@@ -58,9 +66,11 @@ ui <- fluidPage(
       plotOutput("matplot"),
       conditionalPanel(
         condition = "output.matplot",
-        textInput("title", "Plot Title", ""),
-        textInput("x_label", "X Axis Label", ""),
-        textInput("y_label", "Y Axis Label", ""),
+        div(style="display:flex",
+          textInput("title", "Plot Title", ""),
+          textInput("x_label", "X Axis Label", ""),
+          textInput("y_label", "Y Axis Label", "")
+          ),
         downloadButton('downloadpic1', 'Download Plot')
       ),
       plotOutput("cumulative_plot"),
@@ -122,7 +132,15 @@ server <- function(input, output) {
       return(CausalImpact(dataTime, pre_period(), post_period()))
     }
     if (input$use_bsts_model) {
-      
+      if (input$treat_dates) {
+        dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
+        y <- as.ts(dataTime$y)
+        x1 <- as.ts(dataTime$x1)
+        post.period.response <- y[post_period()[1] : post_period()[2]]
+        y[post_period()[1] : post_period()[2]] <- NA
+        eval(parse(text = input$custom_code_text))
+        return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
+      } else {
       y <- as.ts(data()$y)
       x1 <- as.ts(data()$x1)
       post.period.response <- y[post_period()[1] : post_period()[2]]
@@ -131,7 +149,7 @@ server <- function(input, output) {
       #ss <- AddLocalLevel(list(), y)
       #bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
       return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
-      
+      }
     }
     return(CausalImpact(data(), pre_period(), post_period()))
   })
