@@ -23,6 +23,12 @@ ui <- fluidPage(
         label = "Need Help?",
         icon = icon("th"),
         onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')"
+      ),
+      shiny::actionButton(
+        inputId = 'ab2',
+        label = "How to format data before upload",
+        icon = icon("th"),
+        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')"
       )
     )
   ),
@@ -51,7 +57,7 @@ ui <- fluidPage(
           dateInput("max_post_period_date", "Max Post-Period Date", "2014-04-10")
         )
       ),
-      checkboxInput("use_bsts_model", "Use BTST Model as alternative"),
+      checkboxInput("use_bsts_model", "Use BTST Model as alternative \n (Data should contain no dates)"),
       conditionalPanel(
         condition = "input.use_bsts_model",
         textAreaInput("custom_code_text", "Custom Code:",
@@ -132,15 +138,7 @@ server <- function(input, output) {
       return(CausalImpact(dataTime, pre_period(), post_period()))
     }
     if (input$use_bsts_model) {
-      if (input$treat_dates) {
-        dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
-        y <- as.ts(dataTime$y)
-        x1 <- as.ts(dataTime$x1)
-        post.period.response <- y[post_period()[1] : post_period()[2]]
-        y[post_period()[1] : post_period()[2]] <- NA
-        eval(parse(text = input$custom_code_text))
-        return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
-      } else {
+
       y <- as.ts(data()$y)
       x1 <- as.ts(data()$x1)
       post.period.response <- y[post_period()[1] : post_period()[2]]
@@ -149,14 +147,15 @@ server <- function(input, output) {
       #ss <- AddLocalLevel(list(), y)
       #bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
       return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
-      }
     }
     return(CausalImpact(data(), pre_period(), post_period()))
   })
   
-  output$matplot <- renderPlot({
+  output$matplot <- reactive({ 
+    renderPlot({
     if (is.null(data())) return(NULL)
     matplot(data(), type = 'l', main = input$title, xlab = input$x_label, ylab = input$y_label)
+    })
   })
   
   output$cumulative_plot <- renderPlot({
@@ -177,7 +176,7 @@ server <- function(input, output) {
     filename = "matplot.png",
     content = function(file) {
       png(file)
-      matplot(data(), type = 'l', main = "Time Series Intervention", xlab = input$x_label, ylab = input$y_label)
+      matplot(data(), type = 'l', main = input$title, xlab = input$x_label, ylab = input$y_label)
       dev.off()
     })
   
