@@ -151,12 +151,11 @@ server <- function(input, output) {
     return(CausalImpact(data(), pre_period(), post_period()))
   })
   
-  output$matplot <- reactive({ 
-    renderPlot({
+  output$matplot <- renderPlot({
     if (is.null(data())) return(NULL)
     matplot(data(), type = 'l', main = input$title, xlab = input$x_label, ylab = input$y_label)
     })
-  })
+
   
   output$cumulative_plot <- renderPlot({
     if (is.null(impact_model())) return(NULL)
