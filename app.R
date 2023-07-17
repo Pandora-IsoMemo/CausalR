@@ -32,7 +32,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("MPI Causal Impact Dashboard v.001"),
+  titlePanel("CausalR v.001"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
@@ -57,7 +57,7 @@ ui <- fluidPage(
           dateInput("max_post_period_date", "Max Post-Period Date", "2014-04-10")
         )
       ),
-      checkboxInput("use_bsts_model", "Use BTST Model as alternative \n (Data should contain no dates)"),
+      checkboxInput("use_bsts_model", "Use BTST Model as alternative \n (BTST handles date format as integers)"),
       conditionalPanel(
         condition = "input.use_bsts_model",
         textAreaInput("custom_code_text", "Custom Code:",
@@ -80,11 +80,14 @@ ui <- fluidPage(
         downloadButton('downloadpic1', 'Download Plot')
       ),
       plotOutput("cumulative_plot"),
+      br(),
       conditionalPanel(
         condition = "output.cumulative_plot",
         downloadButton('downloadpic2', 'Download Plot')
       ),
+      br(),
       verbatimTextOutput("results")
+      #TODO: HAVE BUTTON FOR DOWNLOAD TEXT OUTPUT: download as TXT file.
     )
   )
 )
