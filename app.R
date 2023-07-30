@@ -14,6 +14,7 @@ library(shiny)
 library(CausalImpact)
 library(ggplot2)
 library(readxl)
+library(DataTools)
 
 ui <- fluidPage(
   shiny::fluidRow(
@@ -34,8 +35,22 @@ ui <- fluidPage(
   ),
   titlePanel("CausalR v.001"),
   sidebarLayout(
-    sidebarPanel(
-      fileInput("file", "Please Upload File"),
+    
+      #fileInput("file", "Please Upload File"),
+      sidebarPanel(
+        style = "position:fixed; width:23%; max-width:500px; overflow-y:auto; height:88%",
+        width = 3,
+        importDataUI('data','Import Data'),
+        tags$hr(),
+        selectInput(
+        #   ns("activeFile"),
+        #   label = "View the imported file",
+        #   choices = c("Import a file ..." = "")
+        ),
+        tags$hr(),
+      mainPanel(width = 8,
+                DTOutput(ns("preview"))),
+      
       checkboxInput("header", "Header", TRUE),
       checkboxInput("treat_dates", "Treat periods as dates"),
       div(style="display:flex",
@@ -93,24 +108,33 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+  # v.002 data upload from other databases
+  data <- importDataServer(
+    "data",
+    customWarningChecks = list(reactive(checkWarningEmptyValues)),
+    customErrorChecks = list(reactive(checkErrorNoNumericColumns)),
+    ignoreWarnings = TRUE,
+    defaultSource = "file"
+  )
   
-  data <- reactive({
-    req(input$file)
-    inFile <- input$file
-    if (endsWith(inFile$name, ".csv")) {
-      df <- read.csv(inFile$datapath, header = input$header)
-    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
-      df <- read_excel(inFile$datapath)
-    } else {
-      return(NULL)
-    }
-    if (input$treat_dates){
-      return(df)
-    } else {
-      df <- subset(df, select = c(y, x1))
-      return(df)
-    }
-  })
+  # v.001 version data upload
+  # data <- reactive({
+  #   req(input$file)
+  #   inFile <- input$file
+  #   if (endsWith(inFile$name, ".csv")) {
+  #     df <- read.csv(inFile$datapath, header = input$header)
+  #   } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
+  #     df <- read_excel(inFile$datapath)
+  #   } else {
+  #     return(NULL)
+  #   }
+  #   if (input$treat_dates){
+  #     return(df)
+  #   } else {
+  #     df <- subset(df, select = c(y, x1))
+  #     return(df)
+  #   }
+  # })
   
   pre_period <- reactive({
     min_pre <- input$min_pre_period
