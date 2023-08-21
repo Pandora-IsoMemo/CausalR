@@ -32,7 +32,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("CausalR v.001"),
+  titlePanel("CausalR v.0.01"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
