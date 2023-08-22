@@ -14,6 +14,7 @@ library(shiny)
 library(CausalImpact)
 library(ggplot2)
 library(readxl)
+library(data-tools)
 
 ui <- fluidPage(
   shiny::fluidRow(
@@ -36,6 +37,8 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
+      importDataUI('pandora_dat',label = "Import Data"),
+      
       checkboxInput("header", "Header", TRUE),
       checkboxInput("treat_dates", "Treat periods as dates"),
       div(style="display:flex",
@@ -93,6 +96,27 @@ ui <- fluidPage(
 )
 
 server <- function(input, output) {
+  ## Import Data ----
+  importedDat <- importDataServer("pandora_dat")
+  
+  fileImport <- reactiveVal(NULL)
+  observe({
+    # reset model
+    browser()
+    Model(NULL)
+    if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
+    
+    req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
+    data <- importedDat()[[1]]
+    valid <- validateImport(data, showModal = TRUE)
+    
+    if (!valid){
+      showNotification("Import is not valid.")
+      fileImport(NULL)
+    } else {
+      fileImport(data)
+    }
+  }) %>% bindEvent(importedDat())
   
   data <- reactive({
     req(input$file)
