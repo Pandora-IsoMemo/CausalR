@@ -15,7 +15,7 @@ library(CausalImpact)
 library(ggplot2)
 library(readxl)
 library(data-tools)
-
+# source: https://github.com/Pandora-IsoMemo/iso-app/blob/f7366c574c919bde7430616f00b6cc83980fad23/R/03-modelResults2D.R#L974-L992
 ui <- fluidPage(
   shiny::fluidRow(
     shinydashboard::box(
