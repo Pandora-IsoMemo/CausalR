@@ -14,7 +14,7 @@ library(shiny)
 library(CausalImpact)
 library(ggplot2)
 library(readxl)
-library(data-tools)
+library(DataTools)
 # source: https://github.com/Pandora-IsoMemo/iso-app/blob/f7366c574c919bde7430616f00b6cc83980fad23/R/03-modelResults2D.R#L974-L992
 ui <- fluidPage(
   shiny::fluidRow(
@@ -102,20 +102,20 @@ server <- function(input, output) {
   fileImport <- reactiveVal(NULL)
   observe({
     # reset model
-    browser()
-    Model(NULL)
+    
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
     
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
     data <- importedDat()[[1]]
-    valid <- validateImport(data, showModal = TRUE)
+    #valid <- validateImport(data, showModal = TRUE)
     
-    if (!valid){
-      showNotification("Import is not valid.")
-      fileImport(NULL)
-    } else {
-      fileImport(data)
-    }
+    # if (!valid){
+    #   showNotification("Import is not valid.")
+    #   fileImport(NULL)
+    # } else {
+    #   fileImport(data)
+    # }
+    fileImport(data)
   }) %>% bindEvent(importedDat())
   
   data <- reactive({
