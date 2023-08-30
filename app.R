@@ -86,7 +86,9 @@ ui <- fluidPage(
       br(),
       conditionalPanel(
         condition = "output.cumulative_plot",
-        downloadButton('downloadpic2', 'Download Plot')
+        downloadButton('downloadpic2', 'Download Plot'),
+        #pickerInput("dropdown1", "Values:", choices = c("x", "y"), multiple = T)
+        #uiOutput("dropdown2")
       ),
       br(),
       verbatimTextOutput("results")
