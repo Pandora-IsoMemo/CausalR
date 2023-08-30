@@ -35,5 +35,6 @@ plot(impact)
 summary(impact)
 summary(impact, "report")        
         
-data$plot <- ggplot(data=iris, aes(x=Sepal.Length, y=Sepal.Width))+ 
-  geom_point(shape=1)})
+########################
+
+
