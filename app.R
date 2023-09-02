@@ -76,9 +76,9 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "output.matplot",
         div(style="display:flex",
-          textInput("title", "Plot Title", ""),
-          textInput("x_label", "X Axis Label", ""),
-          textInput("y_label", "Y Axis Label", "")
+          textInput("title", "Plot Title", "title"),
+          textInput("x_label", "X Axis Label", "time"),
+          textInput("y_label", "Y Axis Label", "y-value")
           ),
         downloadButton('downloadpic1', 'Download Plot')
       ),
@@ -92,9 +92,14 @@ ui <- fluidPage(
           condition = "output.cumulative_plot",
           selectInput("plot_option", "Select Plot:", choices = c("Counterfactual Plot", "Pointwise Plot", "Cumulative Difference Plot")),
           plotOutput("selected_plot"),
-          numericInput("data_line_width_input", "Data Line Width", value = 5),
-          textInput("data_line_color_input", "Data Line Color", value = "red"),
-          selectInput("data_line_type_input", "Data Line Type", choices = c("solid", "dashed")),
+          div(style="display:flex",
+              numericInput("data_line_width_input", "Data Line Width", value = 5),
+              textInput("data_line_color_input", "Data Line Color", value = "red"),
+              selectInput("data_line_type_input", "Data Line Type", choices = c("solid", "dashed"))
+              ),
+          selectInput("export_format", "Select Export Format:",
+                      choices = c("PNG", "PDF", "JPEG", "TIFF", "SVG")),
+          downloadButton('downloadpic3', 'Download Plot')
         )
       ),
       br(),
@@ -190,6 +195,7 @@ server <- function(input, output) {
   output$matplot <- renderPlot({
     if (is.null(data())) return(NULL)
     matplot(data(), type = 'l', main = input$title, xlab = input$x_label, ylab = input$y_label)
+    legend("topleft", colnames(data()),col=seq_len(ncol(data())),cex=0.8,fill=seq_len(ncol(data())))
     })
 
   
@@ -197,6 +203,9 @@ server <- function(input, output) {
     if (is.null(impact_model())) return(NULL)
     plot(impact_model())
   })
+  
+  
+  
   
   
   output$selected_plot <- renderPlot({
@@ -208,24 +217,21 @@ server <- function(input, output) {
     if (selected_option == "Counterfactual Plot") {
       # Generate ggplot for option1
       plot <- generate_datCounterfactual_plot(data = impact,
-                                              data_line_color = input$data_line_color_input, 
-                                              data_line_type = input$data_line_type_input, 
-                                              data_line_width = input$data_line_width_input,
-                                              counter_line_color = "blue", 
-                                              counter_line_type = "dashed", counter_line_width = 5,
+                                              data_line_color = "red", data_line_type = "solid", data_line_width = 5,
+                                              counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
                                               counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
                                               show_event = TRUE, position_event = 40,
                                               event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
                                               title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
-                                              title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
+                                              title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
       
       
     } else if (selected_option == "Pointwise Plot") {
       # Generate ggplot for option2
       plot <- generate_pointwise_plot(data = impact,
-                                      data_line_color = input$data_line_color_input, 
-                                      data_line_type = input$data_line_type_input, 
-                                      data_line_width = input$data_line_width_input,
+                                      counter_line_color = "blue", 
+                                      counter_line_type = "dashed", 
+                                      counter_line_width = 5,
                                       counter_evelope_color = "grey70", 
                                       counter_evelope_alpha = 0.2,
                                       show_event = TRUE, 
@@ -236,7 +242,7 @@ server <- function(input, output) {
                                       title_causal = "Pointwise difference", 
                                       x_causal = "Time", 
                                       y_causal = "Pointwise difference",
-                                      title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
+                                      title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
       
     } else if (selected_option == "Cumulative Difference Plot") {
       # Generate ggplot for option3
@@ -244,17 +250,49 @@ server <- function(input, output) {
                                     counter_line_color = "blue", 
                                     counter_line_type = "dashed", 
                                     counter_line_width = 5,
-                                    counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                    show_event = TRUE, position_event = 40,
+                                    counter_evelope_color = "grey70", 
+                                    counter_evelope_alpha = 0.2,
+                                    show_event = TRUE, 
+                                    position_event = 40,
                                     event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
                                     title_causal = "Pointwise difference", x_causal = "Time", y_causal = "Cumulative difference",
-                                    title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
+                                    title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
       
     }
     
     return(plot)
+    
+  
   })
   
+  # observeEvent(input$downloadpic3, {
+  #   if (is.null(impact_model())) return(NULL)
+  output$downloadpic3 <- downloadHandler(
+    filename = function(){paste("selected_plot", '.png', sep = '')},
+    content = function(filename){
+      ggsave(file, output$selected_plot)
+      # if (export_format == "PNG") {
+      #   ggsave(filename, plot, device = "png")
+      # } else if (export_format == "PDF") {
+      #   ggsave(filename, plot, device = "pdf")
+      # } else if (export_format == "JPEG") {
+      #   ggsave(filename, plot, device = "jpeg")
+      # } else if (export_format == "TIFF") {
+      #   ggsave(filename, plot, device = "tiff")
+      # } else if (export_format == "SVG") {
+      #   if (!require(svglite)) {
+      #     install.packages("svglite")
+      #     library(svglite)
+      #   }
+      #   ggsave(filename, plot, device = "svg")
+    }
+)
+  
+  # output$downloadpic2 <- downloadHandler(
+  #   filename = function(){paste("cumulative_plot", '.png', sep = '')},
+  #   content = function(file){
+  #     ggsave(file, plot = plot(impact_model()))
+  #   })
   
   output$results <- renderPrint({
     if (is.null(impact_model())) return(NULL)
