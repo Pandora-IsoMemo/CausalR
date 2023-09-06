@@ -41,22 +41,7 @@ generate_datCounterfactual_plot <- function(data, data_line_color, data_line_typ
   return(my_plot)
 }
 
-# Example usage
-# Replace the parameters with appropriate values
-generated_plot <- generate_datCounterfactual_plot(data = impact,
-                                                  data_line_color = "red", data_line_type = "solid", data_line_width = 5,
-                                                  counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
-                                                  counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                                  show_event = TRUE, position_event = 40,
-                                                  event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                                  title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
-                                                  title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
 
-
-
-
-# Print the generated plot
-print(generated_plot)
 
 
 
@@ -99,20 +84,6 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
   return(my_plot)
 }
 
-# Example usage
-# Replace the parameters with appropriate values
-generated_plot <- generate_pointwise_plot(data = impact,
-                                          counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
-                                          counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                          show_event = TRUE, position_event = 40,
-                                          event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                          title_causal = "Pointwise difference", x_causal = "Time", y_causal = "Pointwise difference",
-                                          title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
-
-# Print the generated plot
-print(generated_plot)
-
-
 
 ####################
 
@@ -154,16 +125,4 @@ generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, c
   return(my_plot)
 }
 
-# Example usage
-# Replace the parameters with appropriate values
-generated_plot <- generate_cumDiff_plot(data = impact,
-                                           counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
-                                           counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                           show_event = TRUE, position_event = 40,
-                                           event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                           title_causal = "Pointwise difference", x_causal = "Time", y_causal = "Cumulative difference",
-                                           title_fsize = 30, title_center = 0.5, xc_sizea = 20, yc_sizea = 20, xc_size = 40, yc_size = 40)
-
-# Print the generated plot
-print(generated_plot)
 

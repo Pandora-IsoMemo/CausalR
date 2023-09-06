@@ -15,6 +15,10 @@ library(CausalImpact)
 library(ggplot2)
 library(readxl)
 library(DataTools)
+library(svglite)
+
+
+
 # source: https://github.com/Pandora-IsoMemo/iso-app/blob/f7366c574c919bde7430616f00b6cc83980fad23/R/03-modelResults2D.R#L974-L992
 ui <- fluidPage(
   shiny::fluidRow(
@@ -87,20 +91,29 @@ ui <- fluidPage(
       conditionalPanel(
         condition = "output.cumulative_plot",
         downloadButton('downloadpic2', 'Download Plot'),
-        # options for 3 plots
+        
+        ### UI for pick 3 from plots ####
         conditionalPanel(
           condition = "output.cumulative_plot",
-          selectInput("plot_option", "Select Plot:", choices = c("Counterfactual Plot", "Pointwise Plot", "Cumulative Difference Plot")),
-          plotOutput("selected_plot"),
+          br(),
+          selectInput(("plot_option"),
+                      "Select Plot Type:", 
+                      choices = c("Counterfactual Plot", "Pointwise Plot", "Cumulative Difference Plot"),
+                      selected = "Counterfactual Plot"),
+          plotOutput(("selected_plot")),
           div(style="display:flex",
               numericInput("data_line_width_input", "Data Line Width", value = 5),
               textInput("data_line_color_input", "Data Line Color", value = "red"),
               selectInput("data_line_type_input", "Data Line Type", choices = c("solid", "dashed"))
-              ),
-          selectInput("export_format", "Select Export Format:",
-                      choices = c("PNG", "PDF", "JPEG", "TIFF", "SVG")),
+          ),
+
+          selectInput(("export_format"), "Select Export Format:",
+                      choices = c(".PNG", ".PDF", ".JPEG", ".TIFF", ".SVG")),
+          
           downloadButton('downloadpic3', 'Download Plot')
         )
+        
+        
       ),
       br(),
       verbatimTextOutput("results")
@@ -109,7 +122,7 @@ ui <- fluidPage(
   )
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
   ## Import Data ----
   importedDat <- importDataServer("pandora_dat")
   
@@ -205,94 +218,87 @@ server <- function(input, output) {
   })
   
   
+  plot1_obj <- reactive({
+    plot1 <- generate_datCounterfactual_plot(data = impact,
+                                          data_line_color = "red", data_line_type = "solid", data_line_width = 5,
+                                          counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
+                                          counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
+                                          show_event = TRUE, position_event = 40,
+                                          event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
+                                          title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
+                                          title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
+  return(plot1)
+    })
+  
+  plot2_obj <- reactive({
+    plot2  <- generate_pointwise_plot(data = impact,
+                                    counter_line_color = "blue",
+                                    counter_line_type = "dashed",
+                                    counter_line_width = 5,
+                                    counter_evelope_color = "grey70",
+                                    counter_evelope_alpha = 0.2,
+                                    show_event = TRUE,
+                                    position_event = 40,
+                                    event_line_color = "blue",
+                                    event_line_type = "dashed",
+                                    event_line_width = 5,
+                                    title_causal = "Pointwise difference",
+                                    x_causal = "Time",
+                                    y_causal = "Pointwise difference",
+                                    title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
+    return(plot2)
+  })
+  
+  plot3_obj <- reactive({
+    plot3 <- generate_cumDiff_plot(data = impact,
+                                counter_line_color = "blue",
+                                counter_line_type = "dashed",
+                                counter_line_width = 5,
+                                counter_evelope_color = "grey70",
+                                counter_evelope_alpha = 0.2,
+                                show_event = TRUE,
+                                position_event = 40,
+                                event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
+                                title_causal = "Cumulative Difference", x_causal = "Time", y_causal = "Cumulative difference",
+                                title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
+  return(plot3)
+  })
   
   
   
-  output$selected_plot <- renderPlot({
+  final_plot <- reactive({
     if (is.null(impact_model())) return(NULL)
     
     selected_option <- input$plot_option
     plot <- NULL
     
     if (selected_option == "Counterfactual Plot") {
-      # Generate ggplot for option1
-      plot <- generate_datCounterfactual_plot(data = impact,
-                                              data_line_color = "red", data_line_type = "solid", data_line_width = 5,
-                                              counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
-                                              counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                              show_event = TRUE, position_event = 40,
-                                              event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                              title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
-                                              title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
-      
-      
+      # Generate ggplot for option1'
+      return(plot1_obj())
     } else if (selected_option == "Pointwise Plot") {
       # Generate ggplot for option2
-      plot <- generate_pointwise_plot(data = impact,
-                                      counter_line_color = "blue", 
-                                      counter_line_type = "dashed", 
-                                      counter_line_width = 5,
-                                      counter_evelope_color = "grey70", 
-                                      counter_evelope_alpha = 0.2,
-                                      show_event = TRUE, 
-                                      position_event = 40,
-                                      event_line_color = "blue", 
-                                      event_line_type = "dashed", 
-                                      event_line_width = 5,
-                                      title_causal = "Pointwise difference", 
-                                      x_causal = "Time", 
-                                      y_causal = "Pointwise difference",
-                                      title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
-      
+      return(plot2_obj())
     } else if (selected_option == "Cumulative Difference Plot") {
       # Generate ggplot for option3
-      plot <- generate_cumDiff_plot(data = impact,
-                                    counter_line_color = "blue", 
-                                    counter_line_type = "dashed", 
-                                    counter_line_width = 5,
-                                    counter_evelope_color = "grey70", 
-                                    counter_evelope_alpha = 0.2,
-                                    show_event = TRUE, 
-                                    position_event = 40,
-                                    event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                    title_causal = "Pointwise difference", x_causal = "Time", y_causal = "Cumulative difference",
-                                    title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
-      
+      return(plot3_obj())
     }
     
-    return(plot)
-    
-  
   })
+  
+  output$selected_plot <- renderPlot({
+    return(final_plot())
+    })
   
   # observeEvent(input$downloadpic3, {
   #   if (is.null(impact_model())) return(NULL)
+  format_select <- callModule(format_select_mod_server, "format")
+  
   output$downloadpic3 <- downloadHandler(
-    filename = function(){paste("selected_plot", '.png', sep = '')},
-    content = function(filename){
-      ggsave(file, output$selected_plot)
-      # if (export_format == "PNG") {
-      #   ggsave(filename, plot, device = "png")
-      # } else if (export_format == "PDF") {
-      #   ggsave(filename, plot, device = "pdf")
-      # } else if (export_format == "JPEG") {
-      #   ggsave(filename, plot, device = "jpeg")
-      # } else if (export_format == "TIFF") {
-      #   ggsave(filename, plot, device = "tiff")
-      # } else if (export_format == "SVG") {
-      #   if (!require(svglite)) {
-      #     install.packages("svglite")
-      #     library(svglite)
-      #   }
-      #   ggsave(filename, plot, device = "svg")
-    }
+       filename = function(){paste(input$plot_option, input$export_format, sep = '')},
+       content = function(file){
+         ggsave(file, final_plot())}
 )
   
-  # output$downloadpic2 <- downloadHandler(
-  #   filename = function(){paste("cumulative_plot", '.png', sep = '')},
-  #   content = function(file){
-  #     ggsave(file, plot = plot(impact_model()))
-  #   })
   
   output$results <- renderPrint({
     if (is.null(impact_model())) return(NULL)
@@ -315,6 +321,8 @@ server <- function(input, output) {
     filename = function(){paste("cumulative_plot", '.png', sep = '')},
     content = function(file){
       ggsave(file, plot = plot(impact_model()))
+
+      
     })
 }
 
