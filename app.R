@@ -17,7 +17,7 @@ library(readxl)
 library(DataTools)
 library(svglite)
 
-
+source("plot_func.R")
 
 # source: https://github.com/Pandora-IsoMemo/iso-app/blob/f7366c574c919bde7430616f00b6cc83980fad23/R/03-modelResults2D.R#L974-L992
 ui <- fluidPage(
@@ -41,7 +41,17 @@ ui <- fluidPage(
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
+      ##############
+      tags$br(), tags$br(),
       importDataUI('pandora_dat',label = "Import Data"),
+      tags$br(), tags$br(),
+      importDataUI(("modelUpload"), label = "Import Model"),
+      tags$br(), tags$br(),
+      downloadModelUI(("modelDownload"), NULL),
+      
+      downUploadButtonUI(("downUpload"), title = "Load a Model", label = "Upload / Download"),
+      ##############
+      
       
       checkboxInput("header", "Header", TRUE),
       checkboxInput("treat_dates", "Treat periods as dates"),
@@ -124,6 +134,7 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   ## Import Data ----
+  
   importedDat <- importDataServer("pandora_dat")
   
   fileImport <- reactiveVal(NULL)
@@ -144,6 +155,75 @@ server <- function(input, output, session) {
     # }
     fileImport(data)
   }) %>% bindEvent(importedDat())
+  
+  #print(data())
+  
+  # Download/Upload Model ----
+  #uploadedNotes <- reactiveVal()
+  # callModule(downloadModel, "modelDownload", session = session,
+  #            values = values, 
+  #            model = model,
+  #            uploadedNotes = uploadedNotes)
+  # 
+  # uploadedValues <- importDataServer("modelUpload",
+  #                                    title = "Import Model",
+  #                                    defaultSource = "file",
+  #                                    importType = "model",
+  #                                    rPackageName = "ReSources",
+  #                                    ignoreWarnings = TRUE)
+  
+  #observeEvent(uploadedValues(), {
+  # MODEL DOWN- / UPLOAD ----
+  uploadedData <- downUploadButtonServer(
+    "downUpload",
+    dat = data,
+    inputs = input,
+    model = Model,
+    rPackageName = "MpiIsoApp",
+    githubRepo = "iso-app",
+    subFolder = "AverageR",
+    helpHTML = getHelp(id = "model2D"),
+    modelNotes = reactive(input$modelNotes),
+    compressionLevel = 1)
+  
+  observe(priority = 100, {
+    # reset model
+    Model(NULL)
+    
+    ## update data ----
+    # updating isoData could influence the update of isoData in other modelling tabs ... !
+    # First check if desired! If ok, than:
+    # if (uploadedData$inputs$dataSource == "file") {
+    #   fileImport(uploadedData$data)
+    # } else {
+    #   isoData(uploadedData$data)
+    # }
+    
+    data(uploadedData$data)
+  }) %>%
+    bindEvent(uploadedData$data)
+  
+  ########################################################
+  observe(priority = 50, {
+    ## reset input of model notes
+    updateTextAreaInput(session, "modelNotes", value = "")
+    
+    ## update inputs ----
+    inputIDs <- names(uploadedData$inputs)
+    inputIDs <- inputIDs[inputIDs %in% names(input)]
+    
+    for (i in 1:length(inputIDs)) {
+      session$sendInputMessage(inputIDs[i],  list(value = uploadedData$inputs[[inputIDs[i]]]) )
+    }
+  }) %>%
+    bindEvent(uploadedData$inputs)
+  
+  observe(priority = 10, {
+    ## update model ----
+    Model(uploadedData$model)
+  }) %>%
+    bindEvent(uploadedData$model)
+  ####################################################
   
   data <- reactive({
     req(input$file)
@@ -219,7 +299,7 @@ server <- function(input, output, session) {
   
   
   plot1_obj <- reactive({
-    plot1 <- generate_datCounterfactual_plot(data = impact,
+    plot1 <- generate_datCounterfactual_plot(data = impact_model(),
                                           data_line_color = "red", data_line_type = "solid", data_line_width = 5,
                                           counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
                                           counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
@@ -231,7 +311,7 @@ server <- function(input, output, session) {
     })
   
   plot2_obj <- reactive({
-    plot2  <- generate_pointwise_plot(data = impact,
+    plot2  <- generate_pointwise_plot(data = impact_model(),
                                     counter_line_color = "blue",
                                     counter_line_type = "dashed",
                                     counter_line_width = 5,
@@ -250,7 +330,7 @@ server <- function(input, output, session) {
   })
   
   plot3_obj <- reactive({
-    plot3 <- generate_cumDiff_plot(data = impact,
+    plot3 <- generate_cumDiff_plot(data = impact_model(),
                                 counter_line_color = "blue",
                                 counter_line_type = "dashed",
                                 counter_line_width = 5,
@@ -291,7 +371,7 @@ server <- function(input, output, session) {
   
   # observeEvent(input$downloadpic3, {
   #   if (is.null(impact_model())) return(NULL)
-  format_select <- callModule(format_select_mod_server, "format")
+  #format_select <- callModule(format_select_mod_server, "format")
   
   output$downloadpic3 <- downloadHandler(
        filename = function(){paste(input$plot_option, input$export_format, sep = '')},
