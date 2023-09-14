@@ -37,7 +37,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("CausalR v.0.01 (Priority: pandora, then intervention line, then the model"),
+  titlePanel("CausalR v.0.01 (Priority: pandora, 21 customizable features are not ready, then the model"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
@@ -111,10 +111,52 @@ ui <- fluidPage(
                       choices = c("Counterfactual Plot", "Pointwise Plot", "Cumulative Difference Plot"),
                       selected = "Counterfactual Plot"),
           plotOutput(("selected_plot")),
-          div(style="display:flex",
-              numericInput("data_line_width_input", "Data Line Width", value = 5),
-              textInput("data_line_color_input", "Data Line Color", value = "red"),
-              selectInput("data_line_type_input", "Data Line Type", choices = c("solid", "dashed"))
+          
+          # Add this code inside the conditionalPanel for cumulative_plot
+          conditionalPanel(
+            condition = "output.selected_plot ",
+            selectInput("plot_customization", "Plot Customization:",
+                        choices = c("Customize counter line", "Customize event line", "Customize labels")),
+            
+            # Customize counter line input boxes
+            conditionalPanel(
+              condition = "input.plot_customization == 'Customize counter line'",
+              div(style = "display:flex;",
+                  textInput("counter_line_color", "Counter Line Color:", value = "blue"),
+                  selectInput("counter_line_type", "Counter Line Type:",
+                              choices = c("solid", "dashed"), selected = "dashed"),
+                  numericInput("counter_line_width", "Counter Line Width:", value = 5),
+                  textInput("counter_evelope_color", "Counter Envelope Color:", value = "grey70"),
+                  numericInput("counter_evelope_alpha", "Counter Envelope Alpha:", value = 0.2)
+              )
+            ),
+            
+            # Customize event line input boxes
+            conditionalPanel(
+              condition = "input.plot_customization == 'Customize event line'",
+              div(style = "display:flex;",
+                  textInput("event_line_color", "Event Line Color:", value = "blue"),
+                  selectInput("event_line_type", "Event Line Type:",
+                              choices = c("solid", "dashed"), selected = "dashed"),
+                  numericInput("event_line_width", "Event Line Width:", value = 5)
+              )
+            ),
+            
+            # Customize labels input boxes
+            conditionalPanel(
+              condition = "input.plot_customization == 'Customize labels'",
+              div(style = "display:flex;",
+                  textInput("title_causal", "Title:"),
+                  textInput("x_causal", "X Axis Label:", value = "Time"),
+                  textInput("y_causal", "Y Axis Label:"),
+                  numericInput("title_fsize", "Title Font Size:", value = 30),
+                  numericInput("title_center", "Title Center:", value = 0.5),
+                  numericInput("xc_sizea", "X Label Font Size:", value = 15),
+                  numericInput("yc_sizea", "Y Label Font Size:", value = 15),
+                  numericInput("xc_size", "X Axis Font Size:", value = 30),
+                  numericInput("yc_size", "Y Axis Font Size:", value = 30)
+              )
+            )
           ),
 
           selectInput(("export_format"), "Select Export Format:",
@@ -300,15 +342,29 @@ server <- function(input, output, session) {
   
   plot1_obj <- reactive({
     plot1 <- generate_datCounterfactual_plot(data = impact_model(),
-                                          data_line_color = "red", data_line_type = "solid", data_line_width = 5,
-                                          counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
-                                          counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                          show_event = TRUE, 
-                                          max_pre = input$max_pre_period,
-                                          min_post = input$min_post_period,
-                                          event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                          title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
-                                          title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
+                                             data_line_color = input$counter_line_color,
+                                             data_line_type = input$data_line_type,
+                                             data_line_width = input$counter_line_width,
+                                             counter_line_color = input$counter_line_color,
+                                             counter_line_type = input$counter_line_type,
+                                             counter_line_width = input$counter_line_width,
+                                             counter_evelope_color = input$counter_evelope_color,
+                                             counter_evelope_alpha = input$counter_evelope_alpha,
+                                             show_event = TRUE,
+                                             max_pre = input$max_pre_period,
+                                             min_post = input$min_post_period,
+                                             event_line_color = input$event_line_color,
+                                             event_line_type = input$event_line_type,
+                                             event_line_width = input$event_line_width,
+                                             title_causal = "Data vs. counterfactual",
+                                             x_causal = input$x_causal,
+                                             y_causal = input$y_causal,
+                                             title_fsize = input$title_fsize,
+                                             title_center = input$title_center,
+                                             xc_sizea = input$xc_sizea,
+                                             yc_sizea = input$yc_sizea,
+                                             xc_size = input$xc_size,
+                                             yc_size = input$yc_size)
   return(plot1)
     })
   
@@ -347,7 +403,6 @@ server <- function(input, output, session) {
                                 title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
   return(plot3)
   })
-  
   
   
   final_plot <- reactive({

@@ -2,9 +2,15 @@
 
 
 # Function to generate the ggplot
-generate_datCounterfactual_plot <- function(data, data_line_color, data_line_type, data_line_width,
-                                            counter_line_color, counter_line_type, counter_line_width,
-                                            counter_evelope_color, counter_evelope_alpha,
+generate_datCounterfactual_plot <- function(data, 
+                                            data_line_color, 
+                                            data_line_type, 
+                                            data_line_width,
+                                            counter_line_color, 
+                                            counter_line_type, 
+                                            counter_line_width,
+                                            counter_evelope_color, 
+                                            counter_evelope_alpha,
                                             show_event, max_pre, min_post, event_line_color, event_line_type,
                                             event_line_width, title_causal, x_causal, y_causal,
                                             title_fsize, title_center, xc_sizea, yc_sizea, xc_size, yc_size) {
