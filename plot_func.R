@@ -5,7 +5,7 @@
 generate_datCounterfactual_plot <- function(data, data_line_color, data_line_type, data_line_width,
                                             counter_line_color, counter_line_type, counter_line_width,
                                             counter_evelope_color, counter_evelope_alpha,
-                                            show_event, position_event, event_line_color, event_line_type,
+                                            show_event, max_pre, min_post, event_line_color, event_line_type,
                                             event_line_width, title_causal, x_causal, y_causal,
                                             title_fsize, title_center, xc_sizea, yc_sizea, xc_size, yc_size) {
   
@@ -26,7 +26,8 @@ generate_datCounterfactual_plot <- function(data, data_line_color, data_line_typ
           axis.title.y = element_text(size = yc_size))
   
   if (show_event) {
-    my_plot <- my_plot + geom_vline(xintercept = position_event, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+    my_plot <- my_plot + geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+      geom_vline(xintercept = min_post, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       theme(legend.position="none") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),
@@ -49,7 +50,7 @@ generate_datCounterfactual_plot <- function(data, data_line_color, data_line_typ
 # Function to generate the ggplot
 generate_pointwise_plot <- function(data, counter_line_color, counter_line_type, counter_line_width,
                                     counter_evelope_color, counter_evelope_alpha,
-                                    show_event, position_event, event_line_color, event_line_type,
+                                    show_event, max_pre, min_post, event_line_color, event_line_type,
                                     event_line_width, title_causal, x_causal, y_causal,
                                     title_fsize, title_center, xc_sizea, yc_sizea, xc_size, yc_size) {
   
@@ -69,7 +70,8 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
           axis.title.y = element_text(size = yc_size))
   
   if (show_event) {
-    my_plot <- my_plot + geom_vline(xintercept = position_event, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+    my_plot <- my_plot + geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+      geom_vline(xintercept = min_post, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       theme(legend.position="none") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),
@@ -90,7 +92,7 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
 # Function to generate the ggplot
 generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, counter_line_width,
                                      counter_evelope_color, counter_evelope_alpha,
-                                     show_event, position_event, event_line_color, event_line_type,
+                                     show_event, max_pre, min_post, event_line_color, event_line_type,
                                      event_line_width, title_causal, x_causal, y_causal,
                                      title_fsize, title_center, xc_sizea, yc_sizea, xc_size, yc_size) {
   
@@ -110,7 +112,8 @@ generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, c
           axis.title.y = element_text(size = yc_size))
   
   if (show_event) {
-    my_plot <- my_plot + geom_vline(xintercept = position_event, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+    my_plot <- my_plot + geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) + 
+      geom_vline(xintercept = min_post, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       theme(legend.position="none") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),

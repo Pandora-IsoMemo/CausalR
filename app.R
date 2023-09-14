@@ -37,7 +37,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("CausalR v.0.01"),
+  titlePanel("CausalR v.0.01 (Priority: pandora, then intervention line, then the model"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
@@ -303,7 +303,9 @@ server <- function(input, output, session) {
                                           data_line_color = "red", data_line_type = "solid", data_line_width = 5,
                                           counter_line_color = "blue", counter_line_type = "dashed", counter_line_width = 5,
                                           counter_evelope_color = "grey70", counter_evelope_alpha = 0.2,
-                                          show_event = TRUE, position_event = 40,
+                                          show_event = TRUE, 
+                                          max_pre = input$max_pre_period,
+                                          min_post = input$min_post_period,
                                           event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
                                           title_causal = "Data vs. counterfactual", x_causal = "Time", y_causal = "Data & counterfactual",
                                           title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
@@ -318,7 +320,8 @@ server <- function(input, output, session) {
                                     counter_evelope_color = "grey70",
                                     counter_evelope_alpha = 0.2,
                                     show_event = TRUE,
-                                    position_event = 40,
+                                    max_pre = input$max_pre_period,
+                                    min_post = input$min_post_period,
                                     event_line_color = "blue",
                                     event_line_type = "dashed",
                                     event_line_width = 5,
@@ -337,7 +340,8 @@ server <- function(input, output, session) {
                                 counter_evelope_color = "grey70",
                                 counter_evelope_alpha = 0.2,
                                 show_event = TRUE,
-                                position_event = 40,
+                                max_pre = input$max_pre_period,
+                                min_post = input$min_post_period,
                                 event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
                                 title_causal = "Cumulative Difference", x_causal = "Time", y_causal = "Cumulative difference",
                                 title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
