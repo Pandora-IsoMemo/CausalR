@@ -182,7 +182,7 @@ server <- function(input, output, session) {
   fileImport <- reactiveVal(NULL)
   observe({
     # reset model
-    
+    browser()
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
     
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
@@ -202,10 +202,10 @@ server <- function(input, output, session) {
   
   # Download/Upload Model ----
   #uploadedNotes <- reactiveVal()
-  # callModule(downloadModel, "modelDownload", session = session,
-  #            values = values, 
-  #            model = model,
-  #            uploadedNotes = uploadedNotes)
+  # downloadModelServer(downloadModel, "modelDownload", session = session,
+  #                     values = values,
+  #                     model = model,
+  #                     uploadedNotes = uploadedNotes)
   # 
   # uploadedValues <- importDataServer("modelUpload",
   #                                    title = "Import Model",
