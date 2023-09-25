@@ -32,14 +32,15 @@ generate_datCounterfactual_plot <- function(data,
           axis.title.y = element_text(size = yc_size))
   
   if (show_event) {
-    my_plot <- my_plot + geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+    my_plot <- my_plot + 
+      geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       geom_vline(xintercept = min_post, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       theme(legend.position="none") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),
             panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "gray"))
   } else {
-    my_plot <- my_plot + theme(legend.position="none") +
+    my_plot <- my_plot + theme(legend.position="topright") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),
             panel.grid.minor = element_line(size = 0.25, linetype = 'solid', colour = "gray"))
@@ -76,8 +77,10 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
           axis.title.y = element_text(size = yc_size))
   
   if (show_event) {
-    my_plot <- my_plot + geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+    my_plot <- my_plot + 
+      geom_vline(xintercept = max_pre, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
       geom_vline(xintercept = min_post, linetype= event_line_type, color = event_line_color, linewidth= event_line_width) +
+      
       theme(legend.position="none") +
       theme(panel.background = element_rect(fill = "white", color = "black"),
             panel.grid.major = element_line(size = 0.5, linetype = 'solid', colour = "gray"),

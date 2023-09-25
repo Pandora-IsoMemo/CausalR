@@ -16,6 +16,7 @@ library(ggplot2)
 library(readxl)
 library(DataTools)
 library(svglite)
+library(stringr)
 
 source("plot_func.R")
 
@@ -37,7 +38,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("CausalR v.0.01 (Priority: pandora, counterline not reacting, but event line and lables are ok , then the model"),
+  titlePanel("CausalR v.0.01 (Priority: pandora, counterline not reacting (something wrong with the function, its not registering the line color), but event line and lables are ok , then the model"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
@@ -114,7 +115,7 @@ ui <- fluidPage(
           
           # Add this code inside the conditionalPanel for cumulative_plot
           conditionalPanel(
-            condition = "output.selected_plot ",
+            condition = "output.cumulative_plot ",
             selectInput("plot_customization", "Plot Customization:",
                         choices = c("Customize counter line", "Customize event line", "Customize labels")),
             
@@ -174,31 +175,40 @@ ui <- fluidPage(
   )
 )
 
+
+
+
+
+
+
 server <- function(input, output, session) {
   ## Import Data ----
-  
+  #data <- reactive({
   importedDat <- importDataServer("pandora_dat")
   
   fileImport <- reactiveVal(NULL)
+  #data <- reactive({ 
   observe({
     # reset model
-    browser()
+    #browser()
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
     
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
-    data <- importedDat()[[1]]
+    df <- reactive({importedDat()[[1]]})
     #valid <- validateImport(data, showModal = TRUE)
     
-    # if (!valid){
-    #   showNotification("Import is not valid.")
-    #   fileImport(NULL)
-    # } else {
-    #   fileImport(data)
-    # }
-    fileImport(data)
+    if (!valid){
+      showNotification("Import is not valid.")
+      fileImport(NULL)
+    } else {
+      fileImport(df)
+    }
+    fileImport(df)
   }) %>% bindEvent(importedDat())
   
-  #print(data())
+  data  <- reactive({return(df)})
+  # return(data)
+  # })
   
   # Download/Upload Model ----
   #uploadedNotes <- reactiveVal()
@@ -266,8 +276,9 @@ server <- function(input, output, session) {
   }) %>%
     bindEvent(uploadedData$model)
   ####################################################
-  
+  #browser()
   data <- reactive({
+
     req(input$file)
     inFile <- input$file
     if (endsWith(inFile$name, ".csv")) {
@@ -319,7 +330,16 @@ server <- function(input, output, session) {
       x1 <- as.ts(data()$x1)
       post.period.response <- y[post_period()[1] : post_period()[2]]
       y[post_period()[1] : post_period()[2]] <- NA
-      eval(parse(text = input$custom_code_text))
+      
+      # protection against code injection:
+      text2 <- str_replace_all(input$custom_code_text,"q()", "")
+      text2 <- str_replace_all(text2,fixed("\\"), "")
+      text2 <- str_replace_all(text2,"/", "")
+      text2 <- str_replace_all(text2,"system", "")
+      text2 <- str_replace_all(text2,"rm", "")
+      eval(parse(text = text2))
+      
+      
       #ss <- AddLocalLevel(list(), y)
       #bsts.model <- bsts(y ~ data()$x1, ss, niter = 2000)
       return(CausalImpact(bsts.model = bsts.model,post.period.response = post.period.response))
@@ -342,10 +362,10 @@ server <- function(input, output, session) {
   
   plot1_obj <- reactive({
     plot1 <- generate_datCounterfactual_plot(data = impact_model(),
-                                             data_line_color = "black",
-                                             data_line_type = "solid",
+                                             data_line_color = "blue",
+                                             data_line_type = "dashed",
                                              data_line_width = input$counter_line_width,
-                                             counter_line_color = input$counter_line_color,
+                                             counter_line_color = "orange",#input$counter_line_color,
                                              counter_line_type = input$counter_line_type,
                                              counter_line_width = input$counter_line_width,
                                              counter_evelope_color = input$counter_evelope_color,
