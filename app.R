@@ -159,6 +159,7 @@ ui <- fluidPage(
               )
             #)
           ),
+          
 
           selectInput(("export_format"), "Select Export Format:",
                       choices = c(".PNG", ".PDF", ".JPEG", ".TIFF", ".SVG")),
@@ -361,11 +362,15 @@ server <- function(input, output, session) {
   
   
   plot1_obj <- reactive({
+    print(input$counter_line_color)
+    print(input$counter_line_type)
+    print(input$counter_line_width)
+    
     plot1 <- generate_datCounterfactual_plot(data = impact_model(),
-                                             data_line_color = "blue",
-                                             data_line_type = "dashed",
+                                             data_line_color = "black",  # Replace with input$counter_line_color
+                                             data_line_type = "solid",  # Replace with input$counter_line_type
                                              data_line_width = input$counter_line_width,
-                                             counter_line_color = "orange",#input$counter_line_color,
+                                             counter_line_color = input$counter_line_color,
                                              counter_line_type = input$counter_line_type,
                                              counter_line_width = input$counter_line_width,
                                              counter_evelope_color = input$counter_evelope_color,
@@ -385,27 +390,13 @@ server <- function(input, output, session) {
                                              yc_sizea = input$yc_sizea,
                                              xc_size = input$xc_size,
                                              yc_size = input$yc_size)
-  return(plot1)
-    })
+    return(plot1)
+  })
+  
   
   plot2_obj <- reactive({
     plot2  <- generate_pointwise_plot(data = impact_model(),
-                                    # counter_line_color = "blue",
-                                    # counter_line_type = "dashed",
-                                    # counter_line_width = 5,
-                                    # counter_evelope_color = "grey70",
-                                    # counter_evelope_alpha = 0.2,
-                                    # show_event = TRUE,
-                                    # max_pre = input$max_pre_period,
-                                    # min_post = input$min_post_period,
-                                    # event_line_color = "blue",
-                                    # event_line_type = "dashed",
-                                    # event_line_width = 5,
-                                    # title_causal = "Pointwise difference",
-                                    # x_causal = "Time",
-                                    # y_causal = "Pointwise difference",
-                                    # title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30
-                                    counter_line_color = "yellow",
+                                    counter_line_color = input$counter_line_color,
                                     counter_line_type = input$counter_line_type,
                                     counter_line_width = input$counter_line_width,
                                     counter_evelope_color = input$counter_evelope_color,
@@ -431,27 +422,38 @@ server <- function(input, output, session) {
   
   plot3_obj <- reactive({
     plot3 <- generate_cumDiff_plot(data = impact_model(),
-                                counter_line_color = "blue",
-                                counter_line_type = "dashed",
-                                counter_line_width = 5,
-                                counter_evelope_color = "grey70",
-                                counter_evelope_alpha = 0.2,
-                                show_event = TRUE,
-                                max_pre = input$max_pre_period,
-                                min_post = input$min_post_period,
-                                event_line_color = "blue", event_line_type = "dashed", event_line_width = 5,
-                                title_causal = "Cumulative Difference", x_causal = "Time", y_causal = "Cumulative difference",
-                                title_fsize = 30, title_center = 0.5, xc_sizea = 15, yc_sizea = 15, xc_size = 30, yc_size = 30)
+                                   counter_line_color = input$counter_line_color,
+                                   counter_line_type = input$counter_line_type,
+                                   counter_line_width = input$counter_line_width,
+                                   counter_evelope_color = input$counter_evelope_color,
+                                   counter_evelope_alpha = input$counter_evelope_alpha,
+                                   show_event = TRUE,
+                                   max_pre = input$max_pre_period,
+                                   min_post = input$min_post_period,
+                                   event_line_color = input$event_line_color,
+                                   event_line_type = input$event_line_type,
+                                   event_line_width = input$event_line_width,
+                                   title_causal = input$title_causal,
+                                   x_causal = input$x_causal,
+                                   y_causal = input$y_causal,
+                                   title_fsize = input$title_fsize,
+                                   title_center = input$title_center,
+                                   xc_sizea = input$xc_sizea,
+                                   yc_sizea = input$yc_sizea,
+                                   xc_size = input$xc_size,
+                                   yc_size = input$yc_size
+  
+                                )
   return(plot3)
   })
   
   
   final_plot <- reactive({
     if (is.null(impact_model())) return(NULL)
-    
+
     selected_option <- input$plot_option
     plot <- NULL
-    
+
     if (selected_option == "Counterfactual Plot") {
       # Generate ggplot for option1'
       return(plot1_obj())
@@ -462,12 +464,15 @@ server <- function(input, output, session) {
       # Generate ggplot for option3
       return(plot3_obj())
     }
-    
+
   })
-  
+
   output$selected_plot <- renderPlot({
     return(final_plot())
     })
+  
+
+
   
   # observeEvent(input$downloadpic3, {
   #   if (is.null(impact_model())) return(NULL)

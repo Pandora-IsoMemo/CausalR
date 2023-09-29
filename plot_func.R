@@ -18,11 +18,15 @@ generate_datCounterfactual_plot <- function(data,
   library(zoo)
   mydata <- fortify.zoo(data$series)
   library(ggplot2)
-  
+  print(mydata)
   my_plot <- ggplot(mydata, aes(x=Index, y=response)) +
-    geom_line(aes(x=Index, y=response, color= data_line_color, linetype = data_line_type, linewidth = data_line_width)) +
-    geom_line(aes(x=Index, y=point.pred, color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width
-    )) +
+    geom_line(aes(x=Index, y=response), color= data_line_color, linetype = data_line_type, linewidth = data_line_width) +
+    geom_line(aes(x=Index, y=point.pred), color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width) +
+    scale_color_manual(values = c("response" = 'red', "point.pred" = 'blue')) +
+    # scale_color_manual(values = c(
+    #   'Y1' = 'darkblue',
+    #   'Y2' = 'red')) +
+    labs(color = 'Y series') +
     geom_ribbon(aes(ymin=point.pred.lower, ymax=point.pred.upper), color= counter_evelope_color, alpha= counter_evelope_alpha) +
     labs(title = title_causal, x = x_causal, y= y_causal) +
     theme(plot.title=element_text(size= title_fsize, hjust=title_center),
@@ -52,7 +56,6 @@ generate_datCounterfactual_plot <- function(data,
 
 
 
-
 #################
 # Function to generate the ggplot
 generate_pointwise_plot <- function(data, counter_line_color, counter_line_type, counter_line_width,
@@ -66,8 +69,7 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
   library(ggplot2)
   
   my_plot <- ggplot(mydata, aes(x=Index, y=response)) +
-    geom_line(aes(x=Index, y=point.effect, color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width
-    )) +
+    geom_line(aes(x=Index, y=point.effect), color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width) +
     geom_ribbon(aes(ymin=point.effect.lower, ymax=point.effect.upper), color= counter_evelope_color, alpha= counter_evelope_alpha) +
     labs(title = title_causal, x = x_causal, y= y_causal) +
     theme(plot.title=element_text(size= title_fsize, hjust=title_center),
@@ -110,8 +112,7 @@ generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, c
   library(ggplot2)
   
   my_plot <- ggplot(mydata, aes(x=Index, y=response)) +
-    geom_line(aes(x=Index, y=cum.effect, color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width
-    )) +
+    geom_line(aes(x=Index, y=cum.effect), color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width) +
     geom_ribbon(aes(ymin=cum.effect.lower, ymax=cum.effect.upper), color= counter_evelope_color, alpha= counter_evelope_alpha) +
     labs(title = title_causal, x = x_causal, y= y_causal) +
     theme(plot.title=element_text(size= title_fsize, hjust=title_center),
