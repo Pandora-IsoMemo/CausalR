@@ -18,7 +18,7 @@ generate_datCounterfactual_plot <- function(data,
   library(zoo)
   mydata <- fortify.zoo(data$series)
   library(ggplot2)
-  print(mydata)
+  
   my_plot <- ggplot(mydata, aes(x=Index, y=response)) +
     geom_line(aes(x=Index, y=response), color= data_line_color, linetype = data_line_type, linewidth = data_line_width) +
     geom_line(aes(x=Index, y=point.pred), color= counter_line_color, linetype = counter_line_type, linewidth = counter_line_width) +

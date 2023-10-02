@@ -184,30 +184,55 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   ## Import Data ----
-  #data <- reactive({
-  importedDat <- importDataServer("pandora_dat")
+  data <- reactive({
+    #browser()
+    req(input$file)
+    inFile <- input$file
+    if (endsWith(inFile$name, ".csv")) {
+      df <- read.csv(inFile$datapath, header = input$header)
+    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
+      df <- read_excel(inFile$datapath)
+    } else {
+      return(NULL)
+    }
+    if (input$treat_dates){
+      return(df)
+    } else {
+      df <- subset(df, select = c(y, x1))
+      return(df)
+    }
+  })
   
+  importedDat <- importDataServer("pandora_dat")
+
   fileImport <- reactiveVal(NULL)
-  #data <- reactive({ 
+  #data <- reactive({
   observe({
     # reset model
-    #browser()
+    
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
-    
+
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
-    df <- reactive({importedDat()[[1]]})
-    #valid <- validateImport(data, showModal = TRUE)
+    data <- reactive({return(importedDat()[[1]])})
+    # valid <- validateImport(data, showModal = TRUE)
+    # 
+    # if (!valid){
+    #   showNotification("Import is not valid.")
+    #   fileImport(NULL)
+    # } else {
+    #   fileImport(df)
+    # }
+    #fileImport(df)
     
-    if (!valid){
-      showNotification("Import is not valid.")
-      fileImport(NULL)
-    } else {
-      fileImport(df)
-    }
-    fileImport(df)
-  }) %>% bindEvent(importedDat())
+  }) %>% bindEvent(importedDat()) 
   
-  data  <- reactive({return(df)})
+
+  
+  
+  
+  
+  
+  
   # return(data)
   # })
   
@@ -278,24 +303,24 @@ server <- function(input, output, session) {
     bindEvent(uploadedData$model)
   ####################################################
   #browser()
-  data <- reactive({
-
-    req(input$file)
-    inFile <- input$file
-    if (endsWith(inFile$name, ".csv")) {
-      df <- read.csv(inFile$datapath, header = input$header)
-    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
-      df <- read_excel(inFile$datapath)
-    } else {
-      return(NULL)
-    }
-    if (input$treat_dates){
-      return(df)
-    } else {
-      df <- subset(df, select = c(y, x1))
-      return(df)
-    }
-  })
+  # data <- reactive({
+  # 
+  #   req(input$file)
+  #   inFile <- input$file
+  #   if (endsWith(inFile$name, ".csv")) {
+  #     df <- read.csv(inFile$datapath, header = input$header)
+  #   } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
+  #     df <- read_excel(inFile$datapath)
+  #   } else {
+  #     return(NULL)
+  #   }
+  #   if (input$treat_dates){
+  #     return(df)
+  #   } else {
+  #     df <- subset(df, select = c(y, x1))
+  #     return(df)
+  #   }
+  # })
   
   pre_period <- reactive({
     min_pre <- input$min_pre_period
