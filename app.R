@@ -38,7 +38,7 @@ ui <- fluidPage(
       )
     )
   ),
-  titlePanel("CausalR v.0.01 (Priority: pandora, counterline not reacting (something wrong with the function, its not registering the line color), but event line and lables are ok , then the model"),
+  titlePanel("CausalR v.0.01 (Priority: pandora, model download /upload"),
   sidebarLayout(
     sidebarPanel(
       fileInput("file", "Please Upload File"),
