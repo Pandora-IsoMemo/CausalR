@@ -196,7 +196,7 @@ server <- function(input, output, session) {
     df <- importedDat()[[1]]
     
     # if needed, add any app-specific validation here:
-    # valid <- validateImport(data)
+    # valid <- validateImport(df)
     # 
     # if (!valid){
     #   showNotification("Import is not valid.")
