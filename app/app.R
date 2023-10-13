@@ -184,57 +184,29 @@ ui <- fluidPage(
 
 server <- function(input, output, session) {
   ## Import Data ----
-  data <- reactive({
-    #browser()
-    req(input$file)
-    inFile <- input$file
-    if (endsWith(inFile$name, ".csv")) {
-      df <- read.csv(inFile$datapath, header = input$header)
-    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
-      df <- read_excel(inFile$datapath)
-    } else {
-      return(NULL)
-    }
-    if (input$treat_dates){
-      return(df)
-    } else {
-      df <- subset(df, select = c(y, x1))
-      return(df)
-    }
-  })
-  
   importedDat <- importDataServer("pandora_dat")
 
-  fileImport <- reactiveVal(NULL)
-  #data <- reactive({
+  data <- reactiveVal(NULL)
+  
   observe({
-    # reset model
-    #browser()
-    if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) fileImport(NULL)
+    # reset data
+    if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) data(NULL)
 
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
-    data <- importedDat()[[1]]
-    # valid <- validateImport(data, showModal = TRUE)
+    df <- importedDat()[[1]]
+    
+    # if needed, add any app-specific validation here:
+    # valid <- validateImport(data)
     # 
     # if (!valid){
     #   showNotification("Import is not valid.")
-    #   fileImport(NULL)
+    #   data(NULL)
     # } else {
-    #   fileImport(df)
+    #   data(df)
     # }
-    fileImport(data)
     
+    data(df)
   }) %>% bindEvent(importedDat()) 
-  
-
-  
-  
-  
-  
-  
-  
-  # return(data)
-  # })
   
   # Download/Upload Model ----
   #uploadedNotes <- reactiveVal()
@@ -268,15 +240,6 @@ server <- function(input, output, session) {
     # reset model
     Model(NULL)
     
-    ## update data ----
-    # updating isoData could influence the update of isoData in other modelling tabs ... !
-    # First check if desired! If ok, than:
-    # if (uploadedData$inputs$dataSource == "file") {
-    #   fileImport(uploadedData$data)
-    # } else {
-    #   isoData(uploadedData$data)
-    # }
-    
     data(uploadedData$data)
   }) %>%
     bindEvent(uploadedData$data)
@@ -302,25 +265,6 @@ server <- function(input, output, session) {
   }) %>%
     bindEvent(uploadedData$model)
   ####################################################
-  #browser()
-  data <- reactive({
-
-    req(input$file)
-    inFile <- input$file
-    if (endsWith(inFile$name, ".csv")) {
-      df <- read.csv(inFile$datapath, header = input$header)
-    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
-      df <- read_excel(inFile$datapath)
-    } else {
-      return(NULL)
-    }
-    if (input$treat_dates){
-      return(df)
-    } else {
-      df <- subset(df, select = c(y, x1))
-      return(df)
-    }
-  })
   
   pre_period <- reactive({
     min_pre <- input$min_pre_period
