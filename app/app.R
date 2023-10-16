@@ -190,11 +190,14 @@ server <- function(input, output, session) {
   
   observe({
     # reset data
+    browser()
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) data(NULL)
 
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
     df <- importedDat()[[1]]
-    
+    df$x1 <- as.numeric(df$x1)
+    df$y <- as.numeric(df$y)
+    df[is.na(df)] <- 0
     # if needed, add any app-specific validation here:
     # valid <- validateImport(df)
     # 
@@ -461,7 +464,7 @@ server <- function(input, output, session) {
     summary(impact_model(), 'report')
   })
   
-  output$table <- renderTable(head(data))
+  output$table <- renderTable(head(data()))
   
   output$downloadpic1 <- downloadHandler(
     filename = "matplot.png",
