@@ -48,10 +48,15 @@ ui <- fluidPage(
       tags$br(), tags$br(),
       importDataUI(("modelUpload"), label = "Import Model"),
       tags$br(), tags$br(),
-      downloadModelUI(("modelDownload"), NULL),
+      
+      #### download button: remove 'ns' bc it's not in a module
+      downloadModelUI(id = "modelDownload", label = "Download Model"),
+  
+      
       
       downUploadButtonUI(("downUpload"), title = "Load a Model", label = "Upload / Download"),
       ##############
+      
       
       
       checkboxInput("header", "Header", TRUE),
@@ -183,14 +188,44 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
+  
+  data <- reactive({
+    req(input$file)
+    inFile <- input$file
+    if (endsWith(inFile$name, ".csv")) {
+      df <- read.csv(inFile$datapath, header = input$header)
+    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
+      df <- read_excel(inFile$datapath)
+    } else {
+      return(NULL)
+    }
+    if (input$treat_dates){
+      return(df)
+    } else {
+      df <- subset(df, select = c(y, x1))
+      return(df)
+    }
+  })
+  
+  
+  modelNotes <- reactiveVal()
+  downloadModelServer(id = "modelDownload",
+                      dat = data,
+                      inputs = input,
+                      model = impact_model,
+                      rPackageName = "CausalR",
+                      fileExtension = "causalr",
+                      helpHTML = getHelp(id = ""),
+                      modelNotes = modelNotes,
+                      triggerUpdate = reactive(TRUE))
+  
   ## Import Data ----
   importedDat <- importDataServer("pandora_dat")
 
   data <- reactiveVal(NULL)
-  
   observe({
     # reset data
-    browser()
+    #browser()
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) data(NULL)
 
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
