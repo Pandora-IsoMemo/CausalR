@@ -46,14 +46,6 @@ ui <- fluidPage(
       importDataUI(("modelUpload"), label = "Import Model"),
       tags$br(), tags$br(),
       downloadModelUI(id = "modelDownload", label = "Download Model"),
-  
-      
-      
-      #downUploadButtonUI(("downUpload"), title = "Load a Model", label = "Upload / Download"),
-      ##############
-      
-      
-      
       checkboxInput("header", "Header", TRUE),
       checkboxInput("treat_dates", "Treat periods as dates"),
       div(style="display:flex",
