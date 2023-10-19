@@ -41,20 +41,15 @@ ui <- fluidPage(
   titlePanel("CausalR v.0.01 (Priority: pandora, model download /upload"),
   sidebarLayout(
     sidebarPanel(
-      fileInput("file", "Please Upload File"),
-      ##############
-      tags$br(), tags$br(),
       importDataUI('pandora_dat',label = "Import Data"),
       tags$br(), tags$br(),
       importDataUI(("modelUpload"), label = "Import Model"),
       tags$br(), tags$br(),
-      
-      #### download button: remove 'ns' bc it's not in a module
       downloadModelUI(id = "modelDownload", label = "Download Model"),
   
       
       
-      downUploadButtonUI(("downUpload"), title = "Load a Model", label = "Upload / Download"),
+      #downUploadButtonUI(("downUpload"), title = "Load a Model", label = "Upload / Download"),
       ##############
       
       
@@ -188,51 +183,17 @@ ui <- fluidPage(
 
 
 server <- function(input, output, session) {
-  
-  data <- reactive({
-    req(input$file)
-    inFile <- input$file
-    if (endsWith(inFile$name, ".csv")) {
-      df <- read.csv(inFile$datapath, header = input$header)
-    } else if (endsWith(inFile$name, ".xlsx") || endsWith(inFile$name, ".xls")) {
-      df <- read_excel(inFile$datapath)
-    } else {
-      return(NULL)
-    }
-    if (input$treat_dates){
-      return(df)
-    } else {
-      df <- subset(df, select = c(y, x1))
-      return(df)
-    }
-  })
-  
-  
-  modelNotes <- reactiveVal()
-  downloadModelServer(id = "modelDownload",
-                      dat = data,
-                      inputs = input,
-                      model = impact_model,
-                      rPackageName = "CausalR",
-                      fileExtension = "causalr",
-                      helpHTML = getHelp(id = ""),
-                      modelNotes = modelNotes,
-                      triggerUpdate = reactive(TRUE))
-  
   ## Import Data ----
   importedDat <- importDataServer("pandora_dat")
 
   data <- reactiveVal(NULL)
   observe({
     # reset data
-    #browser()
     if (length(importedDat()) == 0 ||  is.null(importedDat()[[1]])) data(NULL)
 
     req(length(importedDat()) > 0, !is.null(importedDat()[[1]]))
     df <- importedDat()[[1]]
-    df$x1 <- as.numeric(df$x1)
-    df$y <- as.numeric(df$y)
-    df[is.na(df)] <- 0
+    
     # if needed, add any app-specific validation here:
     # valid <- validateImport(df)
     # 
@@ -243,65 +204,61 @@ server <- function(input, output, session) {
     #   data(df)
     # }
     
+    # this is not the best place to prepare data, optimally this is done in a separate function
+    # with checks in advance if respective columns do exist in the uploaded data
+    if (!is.null(df$x1)) df$x1 <- as.numeric(df$x1)
+    if (!is.null(df$y)) df$y <- as.numeric(df$y)
+    df[is.na(df)] <- 0
+    
     data(df)
   }) %>% bindEvent(importedDat()) 
   
   # Download/Upload Model ----
-  #uploadedNotes <- reactiveVal()
-  # downloadModelServer(downloadModel, "modelDownload", session = session,
-  #                     values = values,
-  #                     model = model,
-  #                     uploadedNotes = uploadedNotes)
-  # 
-  # uploadedValues <- importDataServer("modelUpload",
-  #                                    title = "Import Model",
-  #                                    defaultSource = "file",
-  #                                    importType = "model",
-  #                                    rPackageName = "ReSources",
-  #                                    ignoreWarnings = TRUE)
+  modelNotes <- reactiveVal()
+  downloadModelServer(id = "modelDownload",
+                      dat = data,
+                      inputs = input,
+                      model = impact_model,
+                      rPackageName = "CausalR",
+                      fileExtension = "causalr",
+                      modelNotes = modelNotes,
+                      triggerUpdate = reactive(TRUE))
   
-  #observeEvent(uploadedValues(), {
-  # MODEL DOWN- / UPLOAD ----
-  uploadedData <- downUploadButtonServer(
-    "downUpload",
-    dat = data,
-    inputs = input,
-    model = Model,
-    rPackageName = "MpiIsoApp",
-    githubRepo = "iso-app",
-    subFolder = "AverageR",
-    helpHTML = getHelp(id = "model2D"),
-    modelNotes = reactive(input$modelNotes),
-    compressionLevel = 1)
+  uploadedModel <- importDataServer("modelUpload",
+                                    title = "Import Model",
+                                    defaultSource = "file",
+                                    ignoreWarnings = TRUE,
+                                    importType = "model",
+                                    fileExtension = "causalr",
+                                    rPackageName = "CausalR")
   
   observe(priority = 100, {
-    # reset model
-    Model(NULL)
+    req(length(uploadedModel()) > 0, uploadedModel()[[1]][["data"]])
     
-    data(uploadedData$data)
+    ## update data ----
+    data(uploadedModel()[[1]][["data"]])
+    ## reset and update notes
+    modelNotes("")
+    modelNotes(uploadedModel()[[1]][["notes"]])
   }) %>%
-    bindEvent(uploadedData$data)
+    bindEvent(uploadedModel())
   
-  ########################################################
   observe(priority = 50, {
-    ## reset input of model notes
-    updateTextAreaInput(session, "modelNotes", value = "")
+    req(length(uploadedModel()) > 0, uploadedModel()[[1]][["inputs"]])
     
     ## update inputs ----
-    inputIDs <- names(uploadedData$inputs)
+    uploadedInputs <- uploadedModel()[[1]][["inputs"]]
+    inputIDs <- names(uploadedInputs)
     inputIDs <- inputIDs[inputIDs %in% names(input)]
-    
     for (i in 1:length(inputIDs)) {
-      session$sendInputMessage(inputIDs[i],  list(value = uploadedData$inputs[[inputIDs[i]]]) )
+      session$sendInputMessage(inputIDs[i],  list(value = uploadedInputs[[inputIDs[i]]]) )
     }
-  }) %>%
-    bindEvent(uploadedData$inputs)
-  
-  observe(priority = 10, {
+    
     ## update model ----
-    Model(uploadedData$model)
+    impact_model(uploadedModel()[[1]][["model"]])
   }) %>%
-    bindEvent(uploadedData$model)
+    bindEvent(uploadedModel())
+  
   ####################################################
   
   pre_period <- reactive({
@@ -324,8 +281,18 @@ server <- function(input, output, session) {
     c(min_post, max_post)
   })
   
+  # if we want to import model objects than
+  # impact_model must be an object that we can update
+  impact_model <- reactiveVal(NULL)
+  observe({
+    # reset impact_model
+    impact_model(NULL)
+    
+    req(impact_model_react())
+    impact_model(impact_model_react())
+  }) %>% bindEvent(impact_model_react(), ignoreNULL = FALSE)
   
-  impact_model <- eventReactive(input$go, {
+  impact_model_react <- eventReactive(input$go, {
     if (is.null(data())) return(NULL)
     
     if (input$treat_dates) {
