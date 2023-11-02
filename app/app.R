@@ -17,28 +17,44 @@ library(readxl)
 library(DataTools)
 library(svglite)
 library(stringr)
+library(shinythemes)
 
 source("plot_func.R")
 
-# source: https://github.com/Pandora-IsoMemo/iso-app/blob/f7366c574c919bde7430616f00b6cc83980fad23/R/03-modelResults2D.R#L974-L992
+
 ui <- fluidPage(
+  
+  includeCSS("stylesheet.css"),
   shiny::fluidRow(
     shinydashboard::box(
       shiny::actionButton(
         inputId = 'ab1',
         label = "Need Help?",
         icon = icon("th"),
-        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')"
+        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')",
+        style="color: #fff; background-color: #006c66; border-color: #2e6da4"
       ),
       shiny::actionButton(
         inputId = 'ab2',
         label = "How to format data before upload",
         icon = icon("th"),
-        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')"
+        onclick = "window.open('https://github.com/Pandora-IsoMemo/CausalR/blob/main/HELP.pdf', '_blank')",
+        style="color: #fff; background-color: #006c66; border-color: #2e6da4"
       )
     )
   ),
-  titlePanel("CausalR v.0.01 (Priority: pandora, model download /upload"),
+  #theme = shinytheme(theme = "spacelab"), 
+  br(),
+  navbarPage(theme = shinytheme("flatly"), title= "CausalR v.0.0.1", collapsible = TRUE,
+        tags$head(tags$style(HTML('.navbar-static-top {background-color: #006c66;}',
+            '.navbar-default .navbar-nav>.active>a {background-color: #006c66;}'))),
+       
+        ),
+                                                         
+                                                         
+                                                      
+                                                         
+  
   sidebarLayout(
     sidebarPanel(
       importDataUI('pandora_dat',label = "Import Data"),
