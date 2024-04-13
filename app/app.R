@@ -302,7 +302,7 @@ server <- function(input, output, session) {
   
   impact_model_react <- eventReactive(input$go, {
     if (is.null(data())) return(NULL)
-    
+    #browser()
     if (input$treat_dates) {
       dataTime <- zoo(cbind(data()$y,data()$x1),as.Date(data()$date))
       return(CausalImpact(dataTime, pre_period(), post_period()))
