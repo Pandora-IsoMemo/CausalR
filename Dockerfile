@@ -1,5 +1,5 @@
 # Use base image from our organization
-FROM ghcr.io/r-shiny:4.2.3
+FROM inwt/r-shiny:4.2.3
 
 ADD . .
 
