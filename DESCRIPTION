@@ -1,0 +1,25 @@
+Package: CausalR
+Type: Package
+Title: Detect causation
+Version: 00.00.01
+Authors@R: c(
+    person("Jianyin", "Roachell", email = "roachell@shh.mpg.de", role = c("aut", "cre")),
+    person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
+    )
+Maintainer: Jianyin Roachell <roachell@shh.mpg.de>
+Description: Wrapper for CausalImpact Package by Google.
+License: GPL (>= 3)
+Encoding: UTF-8
+Imports:
+   CausalImpact,
+   DataTools,
+   ggplot2,
+   readxl,
+   rlang,
+   shiny,
+   shinythemes,
+   stringr,
+   svglite,
+   zoo
+LazyData: true
+RoxygenNote: 7.3.1
