@@ -1,2 +1,11 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^libWin$
+^libMac$
+^lib$
+^libLinux$
+^Dockerfile$
+^\.github$
+^Jenkinsfile$
+^bin$
+^LICENSE\.md$
