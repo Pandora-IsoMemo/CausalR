@@ -1,5 +1,5 @@
 # Use base image from our organization
-FROM inwt/r-shiny:4.2.3
+FROM ghcr.io/pandora-isomemo/base-image:latest
 
 ADD . .
 
