@@ -18,6 +18,7 @@ library(DataTools)
 library(svglite)
 library(stringr)
 library(shinythemes)
+library(CausalR)
 
 #source("plot_func.R")
 

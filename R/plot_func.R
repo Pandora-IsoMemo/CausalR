@@ -1,7 +1,32 @@
-
-
-
-# Function to generate the ggplot
+#' Generate the Counterfactual plot
+#'
+#' @param data data frame with the series and the counterfactual
+#' @param data_line_color color of the data line
+#' @param data_line_type type of the data line
+#' @param data_line_width width of the data line
+#' @param counter_line_color color of the counterfactual line
+#' @param counter_line_type type of the counterfactual line
+#' @param counter_line_width width of the counterfactual line
+#' @param counter_evelope_color color of the counterfactual envelope
+#' @param counter_evelope_alpha alpha of the counterfactual envelope
+#' @param show_event boolean to show the event
+#' @param max_pre maximum value before the event
+#' @param min_post minimum value after the event
+#' @param event_line_color color of the event line
+#' @param event_line_type type of the event line
+#' @param event_line_width width of the event line
+#' @param title_causal title of the plot
+#' @param x_causal x axis label
+#' @param y_causal y axis label
+#' @param title_fsize title font size
+#' @param title_center title center
+#' @param xc_sizea x axis label size
+#' @param yc_sizea y axis label size
+#' @param xc_size x axis size
+#' @param yc_size y axis size
+#' @return ggplot
+#'
+#' @export
 generate_datCounterfactual_plot <- function(data,
                                             data_line_color,
                                             data_line_type,
@@ -51,11 +76,32 @@ generate_datCounterfactual_plot <- function(data,
   return(my_plot)
 }
 
-
-
-
-#################
-# Function to generate the ggplot
+#' Generate the Pointwise plot
+#'
+#' @param data data frame with the series and the counterfactual
+#' @param counter_line_color color of the counterfactual line
+#' @param counter_line_type type of the counterfactual line
+#' @param counter_line_width width of the counterfactual line
+#' @param counter_evelope_color color of the counterfactual envelope
+#' @param counter_evelope_alpha alpha of the counterfactual envelope
+#' @param show_event boolean to show the event
+#' @param max_pre maximum value before the event
+#' @param min_post minimum value after the event
+#' @param event_line_color color of the event line
+#' @param event_line_type type of the event line
+#' @param event_line_width width of the event line
+#' @param title_causal title of the plot
+#' @param x_causal x axis label
+#' @param y_causal y axis label
+#' @param title_fsize title font size
+#' @param title_center title center
+#' @param xc_sizea x axis label size
+#' @param yc_sizea y axis label size
+#' @param xc_size x axis size
+#' @param yc_size y axis size
+#' @return ggplot
+#'
+#' @export
 generate_pointwise_plot <- function(data, counter_line_color, counter_line_type, counter_line_width,
                                     counter_evelope_color, counter_evelope_alpha,
                                     show_event, max_pre, min_post, event_line_color, event_line_type,
@@ -93,10 +139,32 @@ generate_pointwise_plot <- function(data, counter_line_color, counter_line_type,
   return(my_plot)
 }
 
-
-####################
-
-# Function to generate the ggplot
+#' Generate the Cumulative Difference plot
+#'
+#' @param data data frame with the series and the counterfactual
+#' @param counter_line_color color of the counterfactual line
+#' @param counter_line_type type of the counterfactual line
+#' @param counter_line_width width of the counterfactual line
+#' @param counter_evelope_color color of the counterfactual envelope
+#' @param counter_evelope_alpha alpha of the counterfactual envelope
+#' @param show_event boolean to show the event
+#' @param max_pre maximum value before the event
+#' @param min_post minimum value after the event
+#' @param event_line_color color of the event line
+#' @param event_line_type type of the event line
+#' @param event_line_width width of the event line
+#' @param title_causal title of the plot
+#' @param x_causal x axis label
+#' @param y_causal y axis label
+#' @param title_fsize title font size
+#' @param title_center title center
+#' @param xc_sizea x axis label size
+#' @param yc_sizea y axis label size
+#' @param xc_size x axis size
+#' @param yc_size y axis size
+#' @return ggplot
+#'
+#' @export
 generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, counter_line_width,
                                   counter_evelope_color, counter_evelope_alpha,
                                   show_event, max_pre, min_post, event_line_color, event_line_type,
@@ -131,5 +199,3 @@ generate_cumDiff_plot <- function(data, counter_line_color, counter_line_type, c
 
   return(my_plot)
 }
-
-
