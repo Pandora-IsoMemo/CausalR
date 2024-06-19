@@ -1,15 +1,10 @@
-# CausalR app development version
+# CausalR 24.06.0
 
-## CausalR 00.00.01
+## New Features
+- Documentation for package functions has been added.
 
-### New Features
+# CausalR 24.06.0
 
-
-### Updates
-
-
-### New Features
-
-
-### Bug Fixes
-
+## New Features
+- The Shiny app has been refactored into a package, enabling the app to be launched within a Docker container.
+- Dependencies on other packages have been defined.
