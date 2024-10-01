@@ -7,7 +7,7 @@ tags:
   - Counterfactual Analysis
 authors:
   - name: Jianyin Roachell
-    orcid: 0000-0000-0000-0000
+    orcid: 0000-0003-4846-7251
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Ricardo Fernandes
