@@ -11,5 +11,14 @@ https://isomemoapp.com/app/causalr
 ## Installation
 Intall instructions: https://youtu.be/jlT15oblKBE
 
+## statement of need: Do the authors clearly state what problems the software is designed to solve and who the target audience is?
+
+Installation instructions: Is there a clearly-stated list of dependencies? Ideally these should be handled with an automated package management solution.
+Example usage: Do the authors include examples of how to use the software (ideally to solve real-world analysis problems).
+
+## Tests
+Functionality documentation: Is the core functionality of the software documented to a satisfactory level (e.g., API method documentation)?
+Automated tests: Are there automated tests or manual steps described so that the functionality of the software can be verified?
+Community guidelines: Are there clear guidelines for third parties wishing to 1) Contribute to the software 2) Report issues or problems with the software 3) Seek support
 `git pull git@github.com:Pandora-IsoMemo/CausalR.git`
 
