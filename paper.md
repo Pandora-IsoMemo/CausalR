@@ -11,6 +11,7 @@ authors:
     corresponding: true
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Ricardo Fernandes
+    orcid: 0000-0003-2258-3262
     equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
     affiliation: "1,2,3"
 
