@@ -42,12 +42,13 @@ We introduce CausalR, an R-Shiny application that provides a user-friendly inter
 
 # Overview
 
-![image](https://github.com/user-attachments/assets/b4961f9c-5d21-4746-b158-67a0d20a755b)
+![The proposed workflow of CausalR.\label{fig:workflow}](causalr_workflow.png){ width=80% }
 Figure 1 shows the general CausalR workflow.
 
 ### Step 1: Data Upload and Configuration
 Users may load time series data in a CSV or Excel format. The first column of the file is the predictor, and the remainder are the covariates. Users may include the time sequence in a date format as the first column. Users can upload local files, using URL file pointers, and directly from the Pandora data platform (https://pandoradata.earth/).   A graph is shown representing the target and covariate time series . Available via the interface are help files on interface use.
-![image](https://github.com/user-attachments/assets/ad0932fe-30f6-4539-9963-981c10e7b78e)
+
+![An example of CausalR's interface.\label{fig:interface}](causalr_interface.png){ width=80% }
 Figure 2. CausalR interface shows the data time range selection options and the graph of an imported time series.
 
 ### Step 2: Pre- and Post-Period Specification
@@ -82,18 +83,9 @@ For a quick reference, the following citation commands can be used:
 - `[@author:2001]` -> "(Author et al., 2001)"
 - `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
 
-# Figures
-
-Figures can be included like this:
-![Caption for example figure.\label{fig:example}](figure.png)
-and referenced from text using \autoref{fig:example}.
-
-Figure sizes can be customized by adding an optional second parameter:
-![Caption for example figure.](figure.png){ width=20% }
 
 # Acknowledgements
 
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
+We acknowledge contributions from INWT of this project.
 
 # References
