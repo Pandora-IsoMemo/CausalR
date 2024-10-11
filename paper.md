@@ -41,13 +41,13 @@ Even though CausalImpact provides an innovative technique to assess causal impac
 We introduce CausalR, an R-Shiny application that provides a user-friendly interface to address the gaps in CausalImpact. Our goal is to broaden the adoption of Bayesian counterfactual analysis across various applications by making it more accessible to those less proficient in R coding. CausalR incorporates modules for data import and the import and export of model instances, directly linking up to archeological, radiocarbon, and stable isotopic time series data from the Pandora open data platform. Users can import data from different data sources from Bronze Age to Iron Age in regional databases. The seamless data integration is one of the more significant features of CausalR. In addition, another noteworthy feature is import and export model instances, which can be stored at Pandora or other online repositories. This facilitates easy access to the models users built and promotes collaborative research projects, so that other researchers can enhance reusability and test repeatability.
 
 # Overview
-
+![The proposed workflow of CausalR.\label{fig:workflow}](causalr_workflow.png){ width=80% }
 Figure 1 shows the general CausalR workflow.
 
 ### Step 1: Data Upload and Configuration
 Users may load time series data in a CSV or Excel format. The first column of the file is the predictor, and the remainder are the covariates. Users may include the time sequence in a date format as the first column. Users can upload local files, using URL file pointers, and directly from the Pandora data platform (https://pandoradata.earth/).   A graph is shown representing the target and covariate time series . Available via the interface are help files on interface use.
 
-
+![An example of CausalR's interface.\label{fig:interface}](causalr_interface.png){ width=80% }
 Figure 2. CausalR interface shows the data time range selection options and the graph of an imported time series.
 
 ### Step 2: Pre- and Post-Period Specification
