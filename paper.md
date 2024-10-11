@@ -42,7 +42,6 @@ We introduce CausalR, an R-Shiny application that provides a user-friendly inter
 
 # Overview
 
-
 Figure 1 shows the general CausalR workflow.
 
 ### Step 1: Data Upload and Configuration
@@ -55,33 +54,19 @@ Figure 2. CausalR interface shows the data time range selection options and the 
 Users identify the time ranges corresponding to the periods before and after the event or intervention under study. Moreover, users provide date or index values, with the latter corresponding to time series row numbers when dates are absent as a first column.
 
 ### Step 3: Model Selection and Execution
-By default, the CausalImpact model lacks a local linear trend component. As an alternative, users may choose to input their own code into a custom textbox to render the  Bayesian Structural Time Series (BSTS) model  . Following model selection or customization, the code is then run. In addition, to ensure the security of the software, the custom code functionality is isolated from the main operation system console to prevent malicious code injections. 
+By default, the `CausalImpact` model lacks a local linear trend component. As an alternative, users may choose to input their own code into a custom textbox to render the  Bayesian Structural Time Series (BSTS) model. Following model selection or customization, the code is then run. In addition, to ensure the security of the software, the custom code functionality is isolated from the main operation system console to prevent malicious code injections. 
 
 ### Step 4: Results Visualization and Analysis Report 
-CausalR includes three customizable graph outputs:  1) plot of target time series data vs. counterfactual prediction; 2) plot of pointwise difference between data and counterfactual; 3) cumulative difference between data and counterfactual.  Users can export the plot values in a table format. A text report is also displayed, consisting of summary statistics for the post-intervention period and a descriptive interpretation of the results as issued by CausalImpact. Any R errors are also displayed in the text report..
+`CausalR` includes three customizable graph outputs:  1) plot of target time series data vs. counterfactual prediction; 2) plot of pointwise difference between data and counterfactual; 3) cumulative difference between data and counterfactual.  Users can export the plot values in a table format. A text report is also displayed, consisting of summary statistics for the post-intervention period and a descriptive interpretation of the results as issued by `CausalImpact`. Any `R` errors are also displayed in the text report.
 
-# Usage and Downloading: 
-•	CausalR can be installed locally by downloading the package from its GitHub repository (https://github.com/Pandora-IsoMemo/CausalR). 
-•	Installation instructions, including instructions in video format, are available at the repository. Users can also employ a Docker container file for local installations that removes the need to install R or any dependencies (https://github.com/Pandora-IsoMemo/CausalR). 
-•	Online user-friendly interface for CausalR is also available here: https://isomemoapp.com/app/causalr. Users can save and share model instances. When these are deposited at Pandora, they can be directly loaded from CausalR.
+# Usage and Downloading 
+- `CausalR` can be installed locally by downloading the package from its [GitHub repository](https://github.com/Pandora-IsoMemo/CausalR).
+- Installation instructions, including instructions in video format, are available at the repository. Users can also employ a Docker container file for local installations that removes the need to install R or any dependencies here://. 
+- Online user-friendly interface for CausalR is also available here: https://isomemoapp.com/app/causalr. Users can save and share model instances. When these are deposited at Pandora, they can be directly loaded from `CausalR`.
 
 
-# Conclusion:
-CausalR represents a significant advancement in making Bayesian counterfactual analysis more accessible and user-friendly. By addressing the limitations of the CausalImpact package, CausalR improves the user experience with customizable features, streamlined workflows, and seamless data integration with open data platforms like Pandora. These improvements make it easier for researchers across various fields to conduct sophisticated causal impact evaluations regardless of coding expertise. Additionally, its ability to import, export, and store models fosters collaboration and reusability for scholars and researchers in their workflow.  CausalR is a powerful tool for individual analysis and a catalyst for broader scientific inquiry and collaboration.
-
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
+# Conclusion
+`CausalR` represents a significant advancement in making bayesian counterfactual analysis more accessible and user-friendly. By addressing the limitations of the `CausalImpact` package, `CausalR` improves the user experience with customizable features, streamlined workflows, and seamless data integration with open data platforms like `Pandora`. These improvements make it easier for researchers across various fields to conduct sophisticated causal impact evaluations regardless of coding expertise. Additionally, its ability to import, export, and store models fosters collaboration and reusability for scholars and researchers in their workflow.  `CausalR` is a powerful tool for researchers to access rapid data retrieval from existing archeological data sources, causal bayesian modeling flexibility, and highly customizable graphical outputs. 
 
 
 # Acknowledgements
