@@ -1,7 +1,7 @@
 Package: CausalR
 Type: Package
 Title: Detect causation
-Version: 24.06.2
+Version: 24.06.1.1
 Authors@R: c(
     person("Jianyin", "Roachell", email = "roachell@shh.mpg.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
