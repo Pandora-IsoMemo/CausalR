@@ -12,6 +12,7 @@ Last Updated: Oct 16, 2024
 Run the following R commands in your R console.
 ```
 options(repos = c(getOption("repos"), PANDORA = "https://Pandora-IsoMemo.github.io/drat/"))
+install.packages("DataTools")
 install.packages("CausalR")
 ```
 
