@@ -12,33 +12,35 @@ authors:
     affiliation: "1" # (Multiple affiliations must be quoted)
   - name: Ricardo Fernandes
     orcid: 0000-0003-2258-3262
-    equal-contrib: true # (This is how you can denote equal contributions between multiple authors)
-    affiliation: "1,2,3"
+    equal-contrib: false # (This is how you can denote equal contributions between multiple authors)
+    affiliation: "1,2,3,4"
 
 
 affiliations:
- - name: Max Plank Institute of Geoanthropology, Jena, Germany
+ - name: Max Plank Institute of Geoanthropology, Kahlaische Straße 10, 07743 Jena, Germany
    index: 1
- - name: Faculty of Arts, Masaryk University, Brno, Czechia
+ - name: Department of Bioarchaeology, Faculty of Archaeology, University of Warsaw, ul. Krakowskie Przedmieście 26/28, 00-     927 Warszawa, Poland
    index: 2
- - name: Climate Change and History Research Initiative, Princeton University, Princeton, USA
+ - Arne Faculty of Arts, Masaryk University, Nováka 1, 602 00, Brno-střed, Czech Republic
    index: 3
-date: 30 September 2024
+ - name: Climate Change and History Research Initiative, Princeton University, Princeton, USA
+   index: 4
+date: 1 November 2024
 bibliography: paper.bib
 
 ---
 
 # Summary
 
-`CausalR` is an R-Shiny user-friendly interface for CausalImpact` R package, which leverages the Bayesian modeling capabilities to estimate the causal effect of an intervention on a time series (Brodersen et al., 2015).  CausalImpact is inferred by comparing the counterfactual posterior and the observed data, but users are currently not able to easily navigate to the analysis and visualize the results. Going one step beyond, CausalR is able to generate and visualize a counterfactual prediction, or “what would have happened”, with highly customized features. In addition, CausalR introduces a new workflow streamlining the causal analysis by giving users high input data customization, automating model building, and generating informative visualizations. Furthermore, CausalR also offers a direct connection to the API of the Pandora data platform, one of the largest archeological databases where various types of time series of data are made available. 
+`CausalR` is a R-Shiny user-friendly interface for the [`CausalImpact`](https://google.github.io/CausalImpact/CausalImpact.html) R package, which leverages the Bayesian modeling capabilities to estimate the causal effect of an intervention on a time series (Brodersen et al., 2015).  CausalImpact is inferred by comparing the counterfactual posterior and the observed data, but users are currently not able to easily navigate to the analysis and visualize the results. Going one step beyond, CausalR is able to generate and visualize a counterfactual prediction, or “what would have happened”, with highly customized features. In addition, CausalR introduces a new workflow streamlining the causal analysis by giving users high input data customization, automating model building, and generating informative visualizations. Furthermore, CausalR also offers a direct connection to the API of the Pandora data platform, one of the largest archeological databases where various types of time series of data are made available. 
 
 # Statement of need
 
 In numerous fields such as economics, marketing, historical research, and public health, it's crucial to understand the causal effects of events and interventions for policy-making, decision-making, and risk assessment analysis. This involves evaluating how interventions have impacted key variables over time. An increasingly reliable method for these evaluations is the Bayesian counterfactual analysis of time series data (Landau et al 2022, Liu et al 2022, Kumar et al 2023, Yabe et al 2020).
 
-Even though CausalImpact provides an innovative technique to assess causal impact, it lacks a few user-friendly features. CausalImpact R package employs Bayesian structural time-series (BSTS) modelling to capture the contributions from multiple components, including regression components for contemporaneous covariates, towards a target time series   (Scott & Varian, 2014). Although the impact can be visualized via point wise and cumulative view, it still lacks customizable visualizations. 
+Even though `CausalImpact` provides an innovative technique to assess causal impact, it lacks a few user-friendly features. `CausalImpact` R package employs Bayesian structural time-series (BSTS) modelling to capture the contributions from multiple components, including regression components for contemporaneous covariates, towards a target time series (Scott & Varian, 2014). Although the impact can be visualized via point wise and cumulative view, it still lacks customizable visualizations. 
 
-We introduce CausalR, an R-Shiny application that provides a user-friendly interface to address the gaps in CausalImpact. Our goal is to broaden the adoption of Bayesian counterfactual analysis across various applications by making it more accessible to those less proficient in R coding. CausalR incorporates modules for data import and the import and export of model instances, directly linking up to archeological, radiocarbon, and stable isotopic time series data from the Pandora open data platform. Users can import data from different data sources from Bronze Age to Iron Age in regional databases. The seamless data integration is one of the more significant features of CausalR. In addition, another noteworthy feature is import and export model instances, which can be stored at Pandora or other online repositories. This facilitates easy access to the models users built and promotes collaborative research projects, so that other researchers can enhance reusability and test repeatability.
+We introduce CausalR, an R-Shiny application that provides a user-friendly interface to enhance `CausalImpact` usage. Our goal is to broaden the adoption of Bayesian counterfactual analysis across various applications by making it more accessible to those less proficient in R coding. CausalR incorporates modules for data import and the import and export of model instances, directly linking up to archeological, radiocarbon, and stable isotopic time series data from the [Pandora](https://pandoradata.earth/) open data platform.  The seamless data integration is one of the more significant features of `CausalR`. In addition, another noteworthy feature is import and export model instances, which can be stored at [Pandora](https://pandoradata.earth/) or other online repositories. This facilitates easy access to the models users built and promotes collaborative research projects, so that other researchers can enhance reusability and test reproducibility.
 
 # Overview
 ![The proposed workflow of CausalR.\label{fig:workflow}](causalr_workflow.png){ width=80% }
@@ -61,12 +63,12 @@ By default, the `CausalImpact` model lacks a local linear trend component. As an
 
 # Usage and Downloading 
 - `CausalR` can be installed locally by downloading the package from its [GitHub repository](https://github.com/Pandora-IsoMemo/CausalR).
-- Installation instructions, including instructions in video format, are available at the repository. Users can also employ a Docker container file for local installations that removes the need to install R or any dependencies here://. 
-- Online user-friendly interface for CausalR is also available here: https://isomemoapp.com/app/causalr. Users can save and share model instances. When these are deposited at Pandora, they can be directly loaded from `CausalR`.
+- Installation instructions, including instructions in video format, are available at the repository. Users can also employ a Docker container file for local installations that removes the need to install R or any dependencies here:[Docker Container](https://github.com/Pandora-IsoMemo/CausalR/blob/main/Dockerfile). 
+- Online user-friendly interface for CausalR is also available here in our [CausalR Web App](https://isomemoapp.com/app/causalr). Users can save and share model instances. When these are deposited at Pandora, they can be directly loaded from `CausalR`.
 
 
 # Conclusion
-`CausalR` represents a significant advancement in making bayesian counterfactual analysis more accessible and user-friendly. By addressing the limitations of the `CausalImpact` package, `CausalR` improves the user experience with customizable features, streamlined workflows, and seamless data integration with open data platforms like `Pandora`. These improvements make it easier for researchers across various fields to conduct sophisticated causal impact evaluations regardless of coding expertise. Additionally, its ability to import, export, and store models fosters collaboration and reusability for scholars and researchers in their workflow.  `CausalR` is a powerful tool for researchers to access rapid data retrieval from existing archeological data sources, causal bayesian modeling flexibility, and highly customizable graphical outputs. 
+`CausalR` is a tool that enhances access to Bayesian conterfactual analysis via a user-friendly interface based on the `Causalimpact` package. `CausalR` improves the user experience with customizable features, streamlined workflows, and seamless data integration with open data platforms like `Pandora`. These improvements make it easier for researchers across various fields to conduct sophisticated causal impact evaluations regardless of coding expertise. Additionally, its ability to import, export, and store models fosters collaboration and reusability for scholars and researchers in their workflow.
 
 
 # Acknowledgements
