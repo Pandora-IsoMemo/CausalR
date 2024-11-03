@@ -7,18 +7,57 @@ Last Updated: Oct 16, 2024
 
 [![Alt Text]<img width="1050" alt="image" src="https://github.com/user-attachments/assets/b352550e-ac6a-444a-b9b4-9e2e9ebe08c2">([link_url](https://isomemoapp.com/app/causalr))
 
+## Web Application (Recommended)
+> Access here: https://isomemoapp.com/app/causalr
 
-## Installation
-Run the following R commands in your R console.
+## Installation locally
+### Method 1) Run the following R commands in your R console.
 ```
 options(repos = c(getOption("repos"), PANDORA = "https://Pandora-IsoMemo.github.io/drat/"))
 install.packages("DataTools")
 install.packages("CausalR")
-```
 
-Or Skip Local Machine Download and access the App on the Web
-> ### Web Application
-> Access here: https://isomemoapp.com/app/causalr
+library(CausalR)
+startApplication()
+```
+### Method 2) Docker Container Image
+1. Install the software Docker
+Download installation files from one of the links below and follow installation instructions:
+
+- [Windows](https://docs.docker.com/desktop/install/windows-install/)
+- [MacOS](https://docs.docker.com/desktop/install/mac-install/)
+- [Linux](https://docs.docker.com/desktop/install/linux/)
+
+
+2. Download and install docker image of the app
+This image contains all elements necessary for you to run the app from a web browser. Run this code in a local terminal
+
+Open a terminal (command line):
+
+Windows command line:
+Open the Start menu or press the Windows key + R;
+Type cmd or cmd.exe in the Run command box;
+Press Enter.
+MacOS: open the Terminal app.
+Linux: most Linux systems use the same default keyboard shortcut to start the command line: Ctrl-Alt-T or Super-T
+Copy paste the text below into the terminal and press Enter:
+> `docker pull ghcr.io/pandora-isomemo/causalr:main`
+
+> FOR MacOS M1 edition: `docker pull --platform linux/amd64 ghcr.io/pandora-isomemo/causalr:main`
+
+3. Run the application in Docker
+Steps 1 and 2 install the app. To run the app at any time after the installation open a terminal (as described in point 2) copy paste the text below into the terminal and press Enter. Wait for a notification that the app is in “listening” mode.
+
+`docker run -p 3838:3838 ghcr.io/pandora-isomemo/causalr:main`
+
+If the app is shutdown on Docker or if the terminal is closed the app will no longer work in your web browser (see point 4).
+
+4. Display the app in a web browser
+Once the app is running in Docker you need to display it in a web browser. For this, copy-paste the address below into your web browser’s address input and press Enter.
+
+`http://127.0.0.1:3838/`
+
+Refer to our Application Main Page for more details: https://pandora-isomemo.github.io/docs/apps.html#download-and-install-docker-image-of-the-app-3
 
 ## Statement of need
 In numerous fields such as economics, marketing, historical research, and public health, it's crucial for researchers to understand the causal impacts of interventions for policy-making, decision-making, and risk assessment analysis. An increasingly reliable method for these evaluations is the Bayesian counterfactual analysis of time series data (Landau et al 2022, Liu et al 2022, Kumar et al 2023, Yabe et al 2020). However, there are very few dependable tools for interfacing Bayesian causal analysis and automating the output in a highly sharable platform. 
@@ -31,16 +70,6 @@ Run the following R commands to kick start the app:
 library(CausalR)
 startApplication()
 ```
-Watch the YouTube Video for an example:
-- Use this example dataset: 
-Installation instructions: Is there a clearly-stated list of dependencies? Ideally these should be handled with an automated package management solution.
-? Example usage: Do the authors include examples of how to use the software (ideally to solve real-world analysis problems).
 
-## Tests
-Functionality documentation: Is the core functionality of the software documented to a satisfactory level (e.g., API method documentation)?
-Automated tests: Are there automated tests or manual steps described so that the functionality of the software can be verified?
-Community guidelines: Are there clear guidelines for third parties wishing to 1) Contribute to the software 2) Report issues or problems with the software 3) Seek support
-`git pull git@github.com:Pandora-IsoMemo/CausalR.git`
-
-## References
+- Use this example dataset: https://github.com/Pandora-IsoMemo/CausalR/blob/main/causaImp_example_df%20copy.csv
 
