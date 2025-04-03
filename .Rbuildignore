@@ -9,3 +9,5 @@
 ^Jenkinsfile$
 ^bin$
 ^LICENSE\.md$
+^inst/app/predefinedModels/
+^inst/app/dataQueries/
