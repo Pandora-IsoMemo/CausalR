@@ -60,7 +60,7 @@ ui <- fluidPage(
     sidebarPanel(
       importDataUI('pandora_dat',label = "Import Data"),
       tags$br(), tags$br(),
-      importDataUI(("modelUpload"), label = "Import Model"),
+      importUI(("modelUpload"), label = "Import Model"),
       tags$br(), tags$br(),
       downloadModelUI(id = "modelDownload", label = "Download Model"),
       checkboxInput("header", "Header", TRUE),
@@ -233,7 +233,7 @@ server <- function(input, output, session) {
                       modelNotes = modelNotes,
                       triggerUpdate = reactive(TRUE))
 
-  uploadedModel <- importDataServer("modelUpload",
+  uploadedModel <- importServer("modelUpload",
                                     title = "Import Model",
                                     defaultSource = "file",
                                     ignoreWarnings = TRUE,
