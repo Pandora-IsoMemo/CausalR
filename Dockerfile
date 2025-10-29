@@ -1,10 +1,9 @@
-# Use base image from our organization
-FROM ghcr.io/pandora-isomemo/base-image:latest
+FROM inwt/r-shiny:4.3.2
+
+RUN echo "options(repos = c(getOption('repos'), PANDORA = 'https://Pandora-IsoMemo.github.io/drat/'))" >> /usr/local/lib/R/etc/Rprofile.site
 
 ADD . .
 
-# Install the R packages
 RUN installPackage
 
-# Run the Shiny app
 CMD ["Rscript", "-e", "library(CausalR);startApplication(3838)"]
