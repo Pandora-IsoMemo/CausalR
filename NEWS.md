@@ -5,7 +5,7 @@
 - Increased the required DataTools version to the most recent version.
 - Expanded and organized .Rbuildignore, .gitignore, and .dockerignore entries to reduce accidental inclusion of local/CI/build artifacts.
 - Added GitHub Actions workflows for `R CMD check` and `pkgdown` site building/deployment.
-- Added `URL` and `BugReports` fields to `DESCRIPTION`.
+- Added `URL`, `BugReports` and `Depends` fields to `DESCRIPTION`.
 
 # CausalR 25.04.0
 
