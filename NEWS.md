@@ -1,8 +1,15 @@
+# CausalR 26.09.0
+
+## Updates
+- Updated base image version and added additional package installations.
+- Increased the required DataTools version to the most recent version.
+- Expanded and organized .Rbuildignore, .gitignore, and .dockerignore entries to reduce accidental inclusion of local/CI/build artifacts.
+
 # CausalR 25.04.0
 
 ## Updates
-- reduce package size by adding example files to the `.Rbuildignore`
-- remove warning from import module
+- Reduced package size by adding example files to the `.Rbuildignore`.
+- Removed warning from import module.
 
 # CausalR 24.06.1
 
