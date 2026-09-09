@@ -1,7 +1,7 @@
 Package: CausalR
 Type: Package
 Title: Detect causation
-Version: 25.04.0
+Version: 26.09.0
 Authors@R: c(
     person("Jianyin", "Roachell", email = "roachell@shh.mpg.de", role = c("aut", "cre")),
     person("Ricardo", "Fernandes", email = "ldv1452@gmail.com", role = c("aut"))
@@ -9,10 +9,12 @@ Authors@R: c(
 Maintainer: Jianyin Roachell <roachell@shh.mpg.de>
 Description: Wrapper for CausalImpact Package by Google.
 License: GPL (>= 3)
+URL: https://pandora-isomemo.github.io/CausalR/, https://github.com/Pandora-IsoMemo/CausalR
+BugReports: https://github.com/Pandora-IsoMemo/CausalR/issues
 Encoding: UTF-8
 Imports:
    CausalImpact,
-   DataTools (>= 24.06.0),
+   DataTools (>= 26.08.2),
    ggplot2,
    readxl,
    rlang,
@@ -24,4 +26,4 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0)
 LazyData: true
-RoxygenNote: 7.3.1
+Config/roxygen2/version: 8.0.0
